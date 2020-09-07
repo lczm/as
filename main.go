@@ -4,18 +4,15 @@ import (
 	"fmt"
 
 	"github.com/lczm/as/lexer"
-	"github.com/lczm/as/parser"
 )
 
 func main() {
 	fmt.Println("as")
 
 	lexer := lexer.New()
-	tokens := lexer.Scan("Hello")
+	tokens := lexer.Scan(">=")
 
-	for i, v := range tokens {
-		fmt.Println(i, v)
+	for _, token := range tokens {
+		fmt.Println(token.Type, token.Literal)
 	}
-
-	parser.Parse()
 }
