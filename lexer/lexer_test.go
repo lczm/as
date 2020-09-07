@@ -63,9 +63,16 @@ func TestMultipleTokenScan(t *testing.T) {
 		expectedLiterals []string
 	}{
 		{
+			// Operators
 			`= + - ! * /`,
 			[]token.TokenType{token.ASSIGN, token.PLUS, token.MINUS, token.BANG, token.ASTERISK, token.SLASH},
 			[]string{"=", "+", "-", "!", "*", "/"},
+		},
+		{
+			// Comparison Operators
+			`< <= > >= == !=`,
+			[]token.TokenType{token.LT, token.LT_EQ, token.GT, token.GT_EQ, token.EQ, token.NOT_EQ},
+			[]string{"<", "<=", ">", ">=", "==", "!="},
 		},
 	}
 
