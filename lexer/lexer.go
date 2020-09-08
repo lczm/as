@@ -18,6 +18,8 @@ func (l Lexer) Scan(source string) []token.Token {
 		currentIndex++
 
 		switch ch {
+		case ' ':
+			break
 		// Operators
 		case '+':
 			tokens = append(tokens, token.Token{
@@ -142,6 +144,7 @@ func (l Lexer) Scan(source string) []token.Token {
 			})
 		default:
 			if isDigit(ch) { // Handle numeric case
+				fmt.Println("in isDigit branch")
 				extendedIndex := currentIndex
 				for extendedIndex < len(source) && isDigit(source[extendedIndex]) {
 					extendedIndex++
@@ -151,11 +154,27 @@ func (l Lexer) Scan(source string) []token.Token {
 					Type:    token.NUMBER,
 					Literal: source[currentIndex-1 : extendedIndex],
 				})
-				fmt.Println(source[currentIndex-1 : extendedIndex])
 				currentIndex = extendedIndex
-			} else { // Handle alpha-numeric case
+			} else if isAlphaNumeric(ch) { // Handle alpha-numeric case
+				// If it hits this branch, it means that it starts off with a
+				// alphaNumeric, i.e. 'abc', 'bcd'
+				// This can then get classified as an identifier
+				fmt.Println("in alphaNumeric branch")
+				extendedIndex := currentIndex
+				for extendedIndex < len(source) &&
+					isAlphaNumeric(source[extendedIndex]) {
+					extendedIndex++
+				}
+
+				tokens = append(tokens, token.Token{
+					Type:    token.IDENTIFIER,
+					Literal: source[currentIndex-1 : extendedIndex],
+				})
+				currentIndex = extendedIndex
+			} else {
+				// TODO : Do some form of error handling here
+				fmt.Println("The lexer cannot handle this character")
 			}
-			fmt.Println("Default case")
 		}
 	}
 
@@ -167,6 +186,18 @@ func isDigit(b byte) bool {
 		return true
 	}
 
+	return false
+}
+
+func isAlphaNumeric(b byte) bool {
+	// Check that it is also a digit, as this will be useful
+	// for during the extended index cases
+	if (b >= 'a' && b <= 'z') ||
+		(b >= 'A' && b <= 'Z') ||
+		b == '_' || // Handle underscores as well
+		isDigit(b) {
+		return true
+	}
 	return false
 }
 

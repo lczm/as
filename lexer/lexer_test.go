@@ -38,9 +38,16 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"}", token.RBRACE, "}"},
 		{"[", token.LBRACKET, "["},
 		{"]", token.RBRACKET, "]"},
+
+		// Numbers
 		{"1", token.NUMBER, "1"},
 		{"12", token.NUMBER, "12"},
 		{"091283", token.NUMBER, "091283"},
+
+		// Identifiers
+		{"abc", token.IDENTIFIER, "abc"},
+		{"abc2", token.IDENTIFIER, "abc2"},
+		{"abc2_5", token.IDENTIFIER, "abc2_5"},
 	}
 
 	lexer := New()
@@ -68,13 +75,15 @@ func TestMultipleTokenScan(t *testing.T) {
 		{
 			// Operators
 			`= + - ! * /`,
-			[]token.TokenType{token.ASSIGN, token.PLUS, token.MINUS, token.BANG, token.ASTERISK, token.SLASH},
+			[]token.TokenType{token.ASSIGN, token.PLUS, token.MINUS,
+				token.BANG, token.ASTERISK, token.SLASH},
 			[]string{"=", "+", "-", "!", "*", "/"},
 		},
 		{
 			// Comparison Operators
 			`< <= > >= == !=`,
-			[]token.TokenType{token.LT, token.LT_EQ, token.GT, token.GT_EQ, token.EQ, token.NOT_EQ},
+			[]token.TokenType{token.LT, token.LT_EQ, token.GT,
+				token.GT_EQ, token.EQ, token.NOT_EQ},
 			[]string{"<", "<=", ">", ">=", "==", "!="},
 		},
 		{
@@ -86,9 +95,18 @@ func TestMultipleTokenScan(t *testing.T) {
 		{
 			// Numbers + Comparison Operators + Operators + Delimiters
 			`(123 >= 45) + (45 * 2)`,
-			[]token.TokenType{token.LPAREN, token.NUMBER, token.GT_EQ, token.NUMBER, token.RPAREN, token.PLUS,
-				token.LPAREN, token.NUMBER, token.ASTERISK, token.NUMBER, token.RPAREN},
+			[]token.TokenType{token.LPAREN, token.NUMBER, token.GT_EQ,
+				token.NUMBER, token.RPAREN, token.PLUS,
+				token.LPAREN, token.NUMBER, token.ASTERISK, token.NUMBER,
+				token.RPAREN},
 			[]string{"(", "123", ">=", "45", ")", "+", "(", "45", "*", "2", ")"},
+		},
+		{ // Identifiers + Numbers + Comparison Operators + Operators + Delimiters
+			`abc1 + abc2 + abc_3 >= (45 * 2)`,
+			[]token.TokenType{token.IDENTIFIER, token.PLUS, token.IDENTIFIER,
+				token.PLUS, token.IDENTIFIER, token.GT_EQ, token.LPAREN,
+				token.NUMBER, token.ASTERISK, token.NUMBER, token.RPAREN},
+			[]string{"abc1", "+", "abc2", "+", "abc_3", ">=", "(", "45", "*", "2", ")"},
 		},
 	}
 
