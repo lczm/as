@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/lczm/as/lexer"
+	"github.com/lczm/as/parser"
 )
 
 func main() {
@@ -15,4 +16,7 @@ func main() {
 	for _, token := range tokens {
 		fmt.Println(token.Type, token.Literal)
 	}
+
+	parser := parser.New()
+	parser.Parse()
 }
