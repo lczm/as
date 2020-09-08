@@ -141,11 +141,33 @@ func (l Lexer) Scan(source string) []token.Token {
 				Literal: "]",
 			})
 		default:
+			if isDigit(ch) { // Handle numeric case
+				extendedIndex := currentIndex
+				for extendedIndex < len(source) && isDigit(source[extendedIndex]) {
+					extendedIndex++
+				}
+
+				tokens = append(tokens, token.Token{
+					Type:    token.NUMBER,
+					Literal: source[currentIndex-1 : extendedIndex],
+				})
+				fmt.Println(source[currentIndex-1 : extendedIndex])
+				currentIndex = extendedIndex
+			} else { // Handle alpha-numeric case
+			}
 			fmt.Println("Default case")
 		}
 	}
 
 	return tokens
+}
+
+func isDigit(b byte) bool {
+	if b >= '0' && b <= '9' {
+		return true
+	}
+
+	return false
 }
 
 func New() *Lexer {

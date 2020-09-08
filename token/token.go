@@ -36,6 +36,10 @@ const (
 	LBRACKET  = "["
 	RBRACKET  = "]"
 
+	// Numeric values and identifiers
+	NUMBER     = "NUMBER"
+	IDENTIFIER = "IDENTIFIER"
+
 	// Misc
 	EOF = "EOF"
 )

@@ -38,6 +38,9 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"}", token.RBRACE, "}"},
 		{"[", token.LBRACKET, "["},
 		{"]", token.RBRACKET, "]"},
+		{"1", token.NUMBER, "1"},
+		{"12", token.NUMBER, "12"},
+		{"091283", token.NUMBER, "091283"},
 	}
 
 	lexer := New()
@@ -73,6 +76,19 @@ func TestMultipleTokenScan(t *testing.T) {
 			`< <= > >= == !=`,
 			[]token.TokenType{token.LT, token.LT_EQ, token.GT, token.GT_EQ, token.EQ, token.NOT_EQ},
 			[]string{"<", "<=", ">", ">=", "==", "!="},
+		},
+		{
+			// Numbers + Operators
+			`123 + 45`,
+			[]token.TokenType{token.NUMBER, token.PLUS, token.NUMBER},
+			[]string{"123", "+", "45"},
+		},
+		{
+			// Numbers + Comparison Operators + Operators + Delimiters
+			`(123 >= 45) + (45 * 2)`,
+			[]token.TokenType{token.LPAREN, token.NUMBER, token.GT_EQ, token.NUMBER, token.RPAREN, token.PLUS,
+				token.LPAREN, token.NUMBER, token.ASTERISK, token.NUMBER, token.RPAREN},
+			[]string{"(", "123", ">=", "45", ")", "+", "(", "45", "*", "2", ")"},
 		},
 	}
 
