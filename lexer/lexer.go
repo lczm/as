@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"fmt"
+
 	"github.com/lczm/as/token"
 )
 
@@ -144,7 +145,6 @@ func (l Lexer) Scan(source string) []token.Token {
 			})
 		default:
 			if isDigit(ch) { // Handle numeric case
-				fmt.Println("in isDigit branch")
 				extendedIndex := currentIndex
 				for extendedIndex < len(source) && isDigit(source[extendedIndex]) {
 					extendedIndex++
@@ -159,7 +159,6 @@ func (l Lexer) Scan(source string) []token.Token {
 				// If it hits this branch, it means that it starts off with a
 				// alphaNumeric, i.e. 'abc', 'bcd'
 				// This can then get classified as an identifier
-				fmt.Println("in alphaNumeric branch")
 				extendedIndex := currentIndex
 				for extendedIndex < len(source) &&
 					isAlphaNumeric(source[extendedIndex]) {

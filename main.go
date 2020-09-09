@@ -11,12 +11,12 @@ func main() {
 	fmt.Println("as")
 
 	lexer := lexer.New()
-	tokens := lexer.Scan("123")
+	tokens := lexer.Scan("1 + 2")
 
-	for _, token := range tokens {
-		fmt.Println(token.Type, token.Literal)
-	}
+	// for _, token := range tokens {
+	// 	fmt.Println(token.Type, token.Literal)
+	// }
 
-	parser := parser.New()
+	parser := parser.New(tokens)
 	parser.Parse()
 }
