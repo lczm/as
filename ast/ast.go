@@ -10,6 +10,7 @@ type Statement interface {
 
 type Expression interface {
 	expression()
+	String()
 }
 
 type BinaryExpression struct {
@@ -19,6 +20,7 @@ type BinaryExpression struct {
 }
 
 func (be *BinaryExpression) expression() {}
+func (be *BinaryExpression) String()     {}
 
 type UnaryExpression struct {
 	Right    Expression
@@ -26,15 +28,18 @@ type UnaryExpression struct {
 }
 
 func (ue *UnaryExpression) expression() {}
+func (ue *UnaryExpression) String()     {}
 
 type NumberExpression struct {
 	Value int
 }
 
 func (ne *NumberExpression) expression() {}
+func (ne *NumberExpression) String()     {}
 
 type GroupExpression struct {
 	Expr Expression
 }
 
 func (ge *GroupExpression) expression() {}
+func (ge *GroupExpression) String()     {}
