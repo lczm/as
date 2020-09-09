@@ -14,13 +14,9 @@ type Parser struct {
 }
 
 func (p *Parser) Parse() []ast.Expression {
-	fmt.Println("Parse...")
-
 	// var statements []ast.Statement
 	var expressions []ast.Expression
 	expressions = append(expressions, p.expression())
-
-	fmt.Println(len(expressions))
 
 	return expressions
 }
