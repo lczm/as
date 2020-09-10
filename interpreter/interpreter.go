@@ -25,17 +25,17 @@ func (i *Interpreter) Start() {
 func (i *Interpreter) Eval(expr ast.Expression) object.Object {
 	// fmt.Println("Eval")
 
-	switch ast := expr.(type) {
+	switch expr := expr.(type) {
 	case *ast.BinaryExpression:
 		// fmt.Println(ast.Operator.Literal)
-		return i.evalBinaryExpression(ast)
+		return i.evalBinaryExpression(expr)
 	case *ast.UnaryExpression:
 		// fmt.Println(ast.Operator.Literal)
 	case *ast.NumberExpression:
-		numberValue := int64(ast.Value)
+		numberValue := int64(expr.Value)
 		return &object.Integer{Value: numberValue}
 	case *ast.GroupExpression:
-		fmt.Println("Eval : GroupExpression")
+		return i.Eval(expr.Expr)
 	}
 
 	return nil

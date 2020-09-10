@@ -10,7 +10,7 @@ import (
 func main() {
 	fmt.Println("as")
 
-	input := "5 / 2"
+	input := "5 + (2 - 1)"
 
 	fmt.Println("Input : ", input)
 
