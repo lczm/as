@@ -65,6 +65,13 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 
 			return &object.Integer{Value: leftValue * rightValue}
 		}
+	case token.SLASH: // Divide
+		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+
+			return &object.Integer{Value: leftValue / rightValue}
+		}
 	}
 
 	return nil
