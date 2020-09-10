@@ -78,7 +78,6 @@ func (p *Parser) multiplication() ast.Expression {
 
 	// Match for multiplication
 	for p.match(token.ASTERISK, token.SLASH) {
-		fmt.Println("Should not get here")
 		operator := p.previous()
 		right := p.unary()
 		expr = &ast.BinaryExpression{

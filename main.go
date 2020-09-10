@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/lczm/as/ast"
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
 	"github.com/lczm/as/parser"
@@ -11,23 +10,15 @@ import (
 func main() {
 	fmt.Println("as")
 
-	lexer := lexer.New()
-	tokens := lexer.Scan("1 + 2")
+	input := "5 * 2 - 1"
 
-	// for _, token := range tokens {
-	// 	fmt.Println(token.Type, token.Literal)
-	// }
+	fmt.Println("Input : ", input)
+
+	lexer := lexer.New()
+	tokens := lexer.Scan(input)
 
 	parser := parser.New(tokens)
 	expressions := parser.Parse()
-
-	fmt.Println("Length : ", len(expressions))
-	expr, _ := expressions[0].(*ast.BinaryExpression)
-
-	fmt.Println("Expr : ", expr.String())
-	fmt.Println("Left : ", expr.Left.String())
-	fmt.Println("Right : ", expr.Right.String())
-	fmt.Println("Operator : ", expr.Operator.Literal)
 
 	interpreter := interpreter.New(expressions)
 	interpreter.Start()
