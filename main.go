@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
 	"github.com/lczm/as/parser"
@@ -21,5 +22,5 @@ func main() {
 	expressions := parser.Parse()
 
 	interpreter := interpreter.New(expressions)
-	interpreter.Start()
+	fmt.Println(interpreter.Start())
 }

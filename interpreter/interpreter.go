@@ -1,8 +1,6 @@
 package interpreter
 
 import (
-	"fmt"
-
 	"github.com/lczm/as/ast"
 	"github.com/lczm/as/object"
 	"github.com/lczm/as/token"
@@ -12,14 +10,15 @@ type Interpreter struct {
 	Expressions []ast.Expression
 }
 
-func (i *Interpreter) Start() {
+func (i *Interpreter) Start() string {
 	if len(i.Expressions) < 0 {
 		panic("Interpreter needs at least one expression to start")
 	}
 
 	expr := i.Expressions[0]
 	object := i.Eval(expr)
-	fmt.Println(object.String())
+
+	return object.String()
 }
 
 func (i *Interpreter) Eval(expr ast.Expression) object.Object {
