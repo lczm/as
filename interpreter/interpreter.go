@@ -30,6 +30,7 @@ func (i *Interpreter) Eval(expr ast.Expression) object.Object {
 		return i.evalBinaryExpression(expr)
 	case *ast.UnaryExpression:
 		// fmt.Println(ast.Operator.Literal)
+		return i.evalUnaryExpression(expr)
 	case *ast.NumberExpression:
 		numberValue := int64(expr.Value)
 		return &object.Integer{Value: numberValue}
@@ -73,6 +74,20 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 		}
 	}
 
+	return nil
+}
+
+func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Object {
+	right := i.Eval(expr.Right)
+
+	switch expr.Operator.Type {
+	case token.MINUS:
+		// Inverse the value
+		if right.Type() == object.INTEGER {
+			rightValue := right.(*object.Integer).Value
+			return &object.Integer{Value: -rightValue}
+		}
+	}
 	return nil
 }
 

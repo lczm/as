@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/lczm/as/ast"
@@ -91,7 +90,6 @@ func (p *Parser) multiplication() ast.Expression {
 
 func (p *Parser) unary() ast.Expression {
 	if p.match(token.BANG, token.MINUS) {
-		fmt.Println("Should not get here")
 		operator := p.previous()
 		right := p.unary()
 		return &ast.UnaryExpression{
