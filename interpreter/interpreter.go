@@ -38,7 +38,7 @@ func (i *Interpreter) Eval(expr ast.Expression) object.Object {
 		fmt.Println("Eval : GroupExpression")
 	}
 
-	return &object.Integer{Value: 2}
+	return nil
 }
 
 func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Object {
