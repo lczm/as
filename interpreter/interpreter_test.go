@@ -25,6 +25,10 @@ func TestIntegerExpressions(t *testing.T) {
 			"5 * 2",
 			10,
 		},
+		{
+			"(5 - 2) * 2",
+			6,
+		},
 	}
 
 	lexer := lexer.New()
