@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/lczm/as/ast"
+	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
 	"github.com/lczm/as/parser"
 )
@@ -22,11 +23,13 @@ func main() {
 	expressions := parser.Parse()
 
 	fmt.Println("Length : ", len(expressions))
-
 	expr, _ := expressions[0].(*ast.BinaryExpression)
 
 	fmt.Println("Expr : ", expr.String())
 	fmt.Println("Left : ", expr.Left.String())
 	fmt.Println("Right : ", expr.Right.String())
 	fmt.Println("Operator : ", expr.Operator.Literal)
+
+	interpreter := interpreter.New(expressions)
+	interpreter.Hello()
 }
