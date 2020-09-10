@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/lczm/as/ast"
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
@@ -31,5 +30,5 @@ func main() {
 	fmt.Println("Operator : ", expr.Operator.Literal)
 
 	interpreter := interpreter.New(expressions)
-	interpreter.Hello()
+	interpreter.Start()
 }

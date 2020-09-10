@@ -2,13 +2,12 @@ package lexer
 
 import (
 	"fmt"
-
 	"github.com/lczm/as/token"
 )
 
 type Lexer struct{}
 
-func (l Lexer) Scan(source string) []token.Token {
+func (l *Lexer) Scan(source string) []token.Token {
 	var tokens []token.Token
 
 	currentIndex := 0
