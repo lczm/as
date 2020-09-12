@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"fmt"
 	"github.com/lczm/as/ast"
 	"github.com/lczm/as/object"
 	"github.com/lczm/as/token"
@@ -26,6 +27,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	// fmt.Println("Eval")
 
 	switch node := astNode.(type) {
+	case *ast.PrintStatement:
+		return i.evalPrintStatement(node)
 	case *ast.BinaryExpression:
 		// fmt.Println(ast.Operator.Literal)
 		return i.evalBinaryExpression(node)
@@ -39,6 +42,12 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.Eval(node.Expr)
 	}
 
+	return nil
+}
+
+func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {
+	objectValue := i.Eval(stmt.Expr)
+	fmt.Println(objectValue.String())
 	return nil
 }
 

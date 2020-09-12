@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("as")
 
-	input := "-1"
+	input := "print 1;"
 
 	fmt.Println("Input : ", input)
 
