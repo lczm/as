@@ -22,6 +22,35 @@ func (p *Parser) Parse() []ast.Statement {
 	return statements
 }
 
+func (p *Parser) declaration() ast.Statement {
+	if p.match(token.VAR) {
+		return p.varDeclaration()
+	}
+	return p.statement()
+}
+
+func (p *Parser) varDeclaration() ast.Statement {
+	p.eat(token.IDENTIFIER, "Expect variable name")
+	name := p.previous()
+
+	// If there is an equals, this is an initializer
+	// e.g. : var a = 2;
+	variableStatement := &ast.VariableStatement{}
+	if p.match(token.EQ) {
+		initializer := p.expression()
+		p.eat(token.SEMICOLON, "Expect ';' after variable declaration'")
+
+		variableStatement.Name = name
+		variableStatement.Initializer = initializer
+	} else { // If there is no equals, still have to check for ';'
+		p.eat(token.SEMICOLON, "Expect ';' after variable declaration'")
+
+		variableStatement.Name = name
+		variableStatement.Initializer = nil
+	}
+	return variableStatement
+}
+
 func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
 		return p.printStatement()
@@ -140,6 +169,12 @@ func (p *Parser) primary() ast.Expression {
 		}
 		return &ast.NumberExpression{
 			Value: i,
+		}
+	}
+
+	if p.match(token.IDENTIFIER) {
+		return &ast.VariableExpression{
+			Name: p.previous(),
 		}
 	}
 

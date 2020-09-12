@@ -30,6 +30,13 @@ type PrintStatement struct {
 
 func (pe *PrintStatement) statement() {}
 
+type VariableStatement struct {
+	Name        token.Token
+	Initializer Expression
+}
+
+func (vs *VariableStatement) statement() {}
+
 // Expressions
 type BinaryExpression struct {
 	Left     Expression
@@ -68,4 +75,13 @@ type GroupExpression struct {
 func (ge *GroupExpression) expression() {}
 func (ge *GroupExpression) String() string {
 	return "Group Expression"
+}
+
+type VariableExpression struct {
+	Name token.Token
+}
+
+func (ve *VariableExpression) expression() {}
+func (ve *VariableExpression) String() string {
+	return "VariableExpression"
 }

@@ -42,6 +42,7 @@ const (
 
 	// Statements
 	PRINT = "PRINT"
+	VAR   = "VAR"
 
 	// Misc
 	EOF = "EOF"

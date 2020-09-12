@@ -42,6 +42,8 @@ func TestIntegerExpressions(t *testing.T) {
 		statements := parser.Parse()
 
 		interpreter := New(statements)
+		// Directly hook into the eval function instead, as
+		// the Start() method is self contained
 		object := interpreter.Eval(statements[0])
 		str := object.String()
 
