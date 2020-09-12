@@ -180,7 +180,6 @@ func (l *Lexer) Scan(source string) []token.Token {
 						Literal: identifier,
 					})
 				}
-
 				currentIndex = extendedIndex
 			} else {
 				// TODO : Do some form of error handling here
