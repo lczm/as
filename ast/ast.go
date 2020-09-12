@@ -13,6 +13,20 @@ type Expression interface {
 	String() string
 }
 
+// Statements
+type StatementExpression struct {
+	Expr Expression
+}
+
+func (se *StatementExpression) statement() {}
+
+type PrintStatement struct {
+	Expr Expression
+}
+
+func (pe *PrintStatement) statement() {}
+
+// Expressions
 type BinaryExpression struct {
 	Left     Expression
 	Right    Expression

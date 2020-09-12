@@ -40,6 +40,9 @@ const (
 	NUMBER     = "NUMBER"
 	IDENTIFIER = "IDENTIFIER"
 
+	// Statements
+	PRINT = "PRINT"
+
 	// Misc
 	EOF = "EOF"
 )

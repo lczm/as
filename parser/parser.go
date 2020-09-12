@@ -12,12 +12,21 @@ type Parser struct {
 	tokens  []token.Token
 }
 
-func (p *Parser) Parse() []ast.Expression {
-	// var statements []ast.Statement
-	var expressions []ast.Expression
-	expressions = append(expressions, p.expression())
+func (p *Parser) Parse() []ast.Statement {
+	// var expressions []ast.Expression
+	// expressions = append(expressions, p.expression())
 
-	return expressions
+	var statements []ast.Statement
+	statements = append(statements, p.statement())
+
+	return statements
+}
+
+func (p *Parser) statement() ast.Statement {
+	if p.match(token.PRINT) {
+	}
+
+	return nil
 }
 
 func (p *Parser) expression() ast.Expression {

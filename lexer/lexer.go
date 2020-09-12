@@ -5,7 +5,9 @@ import (
 	"github.com/lczm/as/token"
 )
 
-type Lexer struct{}
+type Lexer struct {
+	Keywords map[string]token.TokenType
+}
 
 func (l *Lexer) Scan(source string) []token.Token {
 	var tokens []token.Token
@@ -143,9 +145,9 @@ func (l *Lexer) Scan(source string) []token.Token {
 				Literal: "]",
 			})
 		default:
-			if isDigit(ch) { // Handle numeric case
+			if l.isDigit(ch) { // Handle numeric case
 				extendedIndex := currentIndex
-				for extendedIndex < len(source) && isDigit(source[extendedIndex]) {
+				for extendedIndex < len(source) && l.isDigit(source[extendedIndex]) {
 					extendedIndex++
 				}
 
@@ -154,20 +156,31 @@ func (l *Lexer) Scan(source string) []token.Token {
 					Literal: source[currentIndex-1 : extendedIndex],
 				})
 				currentIndex = extendedIndex
-			} else if isAlphaNumeric(ch) { // Handle alpha-numeric case
+			} else if l.isAlphaNumeric(ch) { // Handle alpha-numeric case
 				// If it hits this branch, it means that it starts off with a
 				// alphaNumeric, i.e. 'abc', 'bcd'
 				// This can then get classified as an identifier
 				extendedIndex := currentIndex
 				for extendedIndex < len(source) &&
-					isAlphaNumeric(source[extendedIndex]) {
+					l.isAlphaNumeric(source[extendedIndex]) {
 					extendedIndex++
 				}
 
-				tokens = append(tokens, token.Token{
-					Type:    token.IDENTIFIER,
-					Literal: source[currentIndex-1 : extendedIndex],
-				})
+				identifier := source[currentIndex-1 : extendedIndex]
+
+				// Check if it is a keyword
+				if l.isKeyword(identifier) {
+					tokens = append(tokens, token.Token{
+						Type:    l.Keywords[identifier],
+						Literal: identifier,
+					})
+				} else {
+					tokens = append(tokens, token.Token{
+						Type:    token.IDENTIFIER,
+						Literal: identifier,
+					})
+				}
+
 				currentIndex = extendedIndex
 			} else {
 				// TODO : Do some form of error handling here
@@ -179,7 +192,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 	return tokens
 }
 
-func isDigit(b byte) bool {
+func (l *Lexer) isDigit(b byte) bool {
 	if b >= '0' && b <= '9' {
 		return true
 	}
@@ -187,19 +200,29 @@ func isDigit(b byte) bool {
 	return false
 }
 
-func isAlphaNumeric(b byte) bool {
+func (l *Lexer) isAlphaNumeric(b byte) bool {
 	// Check that it is also a digit, as this will be useful
 	// for during the extended index cases
 	if (b >= 'a' && b <= 'z') ||
 		(b >= 'A' && b <= 'Z') ||
 		b == '_' || // Handle underscores as well
-		isDigit(b) {
+		l.isDigit(b) {
 		return true
 	}
 	return false
 }
 
+func (l *Lexer) isKeyword(s string) bool {
+	_, ok := l.Keywords[s]
+	return ok
+}
+
 func New() *Lexer {
-	l := &Lexer{}
+	keywords := make(map[string]token.TokenType)
+	keywords["print"] = token.PRINT
+
+	l := &Lexer{
+		Keywords: keywords,
+	}
 	return l
 }
