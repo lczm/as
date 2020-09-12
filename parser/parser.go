@@ -24,9 +24,30 @@ func (p *Parser) Parse() []ast.Statement {
 
 func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
+		p.printStatement()
 	}
 
-	return nil
+	return p.expressionStatement()
+}
+
+func (p *Parser) printStatement() ast.Statement {
+	expr := p.expression()
+	p.eat(token.SEMICOLON, "Expect ';'")
+
+	printStatement := &ast.PrintStatement{
+		Expr: expr,
+	}
+	return printStatement
+}
+
+func (p *Parser) expressionStatement() ast.Statement {
+	expr := p.expression()
+	p.eat(token.SEMICOLON, "Expect ';'")
+
+	statementExpression := &ast.StatementExpression{
+		Expr: expr,
+	}
+	return statementExpression
 }
 
 func (p *Parser) expression() ast.Expression {
@@ -123,12 +144,7 @@ func (p *Parser) primary() ast.Expression {
 	if p.match(token.LPAREN) {
 		expr := p.expression()
 
-		if p.peek().Type == token.RPAREN {
-			p.current++
-		} else {
-			panic("Expect ')' after '('")
-		}
-
+		p.eat(token.RPAREN, "Expect ')' after '('")
 		return &ast.GroupExpression{
 			Expr: expr,
 		}
@@ -163,6 +179,15 @@ func (p *Parser) previous() token.Token {
 	}
 
 	return p.tokens[current]
+}
+
+func (p *Parser) eat(tokenType token.TokenType, message string) token.Token {
+	if p.peek().Type == tokenType {
+		p.current++
+		return p.peek()
+	}
+	// TODO : Throw an error with the message that is passed in
+	panic(message)
 }
 
 func New(tokens []token.Token) *Parser {

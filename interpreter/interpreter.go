@@ -7,35 +7,36 @@ import (
 )
 
 type Interpreter struct {
-	Expressions []ast.Expression
+	// Expressions []ast.Expression
+	Statements []ast.Statement
 }
 
 func (i *Interpreter) Start() string {
-	if len(i.Expressions) < 0 {
-		panic("Interpreter needs at least one expression to start")
+	if len(i.Statements) < 0 {
+		panic("Interpreter needs at least one statement to start")
 	}
 
-	expr := i.Expressions[0]
-	object := i.Eval(expr)
+	stmt := i.Statements[0]
+	object := i.Eval(stmt)
 
 	return object.String()
 }
 
-func (i *Interpreter) Eval(expr ast.Expression) object.Object {
+func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	// fmt.Println("Eval")
 
-	switch expr := expr.(type) {
+	switch node := astNode.(type) {
 	case *ast.BinaryExpression:
 		// fmt.Println(ast.Operator.Literal)
-		return i.evalBinaryExpression(expr)
+		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
 		// fmt.Println(ast.Operator.Literal)
-		return i.evalUnaryExpression(expr)
+		return i.evalUnaryExpression(node)
 	case *ast.NumberExpression:
-		numberValue := int64(expr.Value)
+		numberValue := int64(node.Value)
 		return &object.Integer{Value: numberValue}
 	case *ast.GroupExpression:
-		return i.Eval(expr.Expr)
+		return i.Eval(node.Expr)
 	}
 
 	return nil
@@ -91,9 +92,9 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 	return nil
 }
 
-func New(expressions []ast.Expression) *Interpreter {
+func New(statements []ast.Statement) *Interpreter {
 	i := &Interpreter{
-		Expressions: expressions,
+		Statements: statements,
 	}
 	return i
 }

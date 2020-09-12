@@ -4,11 +4,15 @@ import (
 	"github.com/lczm/as/token"
 )
 
+type AstNode interface{}
+
 type Statement interface {
+	AstNode
 	statement()
 }
 
 type Expression interface {
+	AstNode
 	expression()
 	String() string
 }
