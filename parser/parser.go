@@ -24,7 +24,7 @@ func (p *Parser) Parse() []ast.Statement {
 
 func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
-		p.printStatement()
+		return p.printStatement()
 	}
 
 	return p.expressionStatement()
@@ -32,6 +32,7 @@ func (p *Parser) statement() ast.Statement {
 
 func (p *Parser) printStatement() ast.Statement {
 	expr := p.expression()
+
 	p.eat(token.SEMICOLON, "Expect ';'")
 
 	printStatement := &ast.PrintStatement{
@@ -42,6 +43,7 @@ func (p *Parser) printStatement() ast.Statement {
 
 func (p *Parser) expressionStatement() ast.Statement {
 	expr := p.expression()
+
 	p.eat(token.SEMICOLON, "Expect ';'")
 
 	statementExpression := &ast.StatementExpression{
@@ -181,11 +183,12 @@ func (p *Parser) previous() token.Token {
 	return p.tokens[current]
 }
 
-func (p *Parser) eat(tokenType token.TokenType, message string) token.Token {
+func (p *Parser) eat(tokenType token.TokenType, message string) {
 	if p.peek().Type == tokenType {
 		p.current++
-		return p.peek()
+		return
 	}
+
 	// TODO : Throw an error with the message that is passed in
 	panic(message)
 }

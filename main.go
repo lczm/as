@@ -11,7 +11,7 @@ import (
 func main() {
 	fmt.Println("as")
 
-	input := "print 1;"
+	input := "print (5 * 2);"
 
 	fmt.Println("Input : ", input)
 
@@ -22,5 +22,6 @@ func main() {
 	expressions := parser.Parse()
 
 	interpreter := interpreter.New(expressions)
-	fmt.Println(interpreter.Start())
+	interpreter.Start()
+	// fmt.Println(interpreter.Start())
 }

@@ -12,20 +12,16 @@ type Interpreter struct {
 	Statements []ast.Statement
 }
 
-func (i *Interpreter) Start() string {
+func (i *Interpreter) Start() {
 	if len(i.Statements) < 0 {
 		panic("Interpreter needs at least one statement to start")
 	}
 
 	stmt := i.Statements[0]
-	object := i.Eval(stmt)
-
-	return object.String()
+	i.Eval(stmt)
 }
 
 func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
-	// fmt.Println("Eval")
-
 	switch node := astNode.(type) {
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
