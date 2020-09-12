@@ -25,8 +25,11 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	switch node := astNode.(type) {
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
+	case *ast.StatementExpression:
+		return i.Eval(node.Expr)
 	case *ast.BinaryExpression:
 		// fmt.Println(ast.Operator.Literal)
+		fmt.Println("BinaryExpression")
 		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
 		// fmt.Println(ast.Operator.Literal)

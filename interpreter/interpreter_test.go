@@ -14,23 +14,23 @@ func TestIntegerExpressions(t *testing.T) {
 		expectedOutput int
 	}{
 		{
-			"1 + 2",
+			"1 + 2;",
 			3,
 		},
 		{
-			"5 - 1 + 5",
+			"5 - 1 + 5;",
 			9,
 		},
 		{
-			"5 * 2",
+			"5 * 2;",
 			10,
 		},
 		{
-			"(5 - 2) * 2",
+			"(5 - 2) * 2;",
 			6,
 		},
 		{
-			"5 - 1 + 2 - (2 * 2)",
+			"5 - 1 + 2 - (2 * 2);",
 			2,
 		},
 	}
@@ -39,10 +39,11 @@ func TestIntegerExpressions(t *testing.T) {
 	for i, test := range tests {
 		tokens := lexer.Scan(test.input)
 		parser := parser.New(tokens)
-		expressions := parser.Parse()
+		statements := parser.Parse()
 
-		interpreter := New(expressions)
-		str := interpreter.Start()
+		interpreter := New(statements)
+		object := interpreter.Eval(statements[0])
+		str := object.String()
 
 		value, err := strconv.Atoi(str)
 		if err != nil {

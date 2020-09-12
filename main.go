@@ -23,5 +23,4 @@ func main() {
 
 	interpreter := interpreter.New(expressions)
 	interpreter.Start()
-	// fmt.Println(interpreter.Start())
 }
