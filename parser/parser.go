@@ -36,7 +36,7 @@ func (p *Parser) varDeclaration() ast.Statement {
 	// If there is an equals, this is an initializer
 	// e.g. : var a = 2;
 	variableStatement := &ast.VariableStatement{}
-	if p.match(token.EQ) {
+	if p.match(token.ASSIGN) {
 		initializer := p.expression()
 		p.eat(token.SEMICOLON, "Expect ';' after variable declaration'")
 
