@@ -12,7 +12,7 @@ func main() {
 	fmt.Println("as")
 
 	// input := "print (5 * 2);"
-	input := "var a; print a;"
+	input := "var a = 3; print a;"
 
 	fmt.Println("Input : ", input)
 
