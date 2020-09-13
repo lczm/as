@@ -17,7 +17,9 @@ func (p *Parser) Parse() []ast.Statement {
 	// expressions = append(expressions, p.expression())
 
 	var statements []ast.Statement
-	statements = append(statements, p.declaration())
+	for p.current != len(p.tokens) {
+		statements = append(statements, p.declaration())
+	}
 
 	return statements
 }

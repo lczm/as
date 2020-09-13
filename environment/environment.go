@@ -15,6 +15,10 @@ func (e *Environment) Get(name string) object.Object {
 }
 
 func New() *Environment {
-	e := &Environment{}
+	values := make(map[string]object.Object)
+
+	e := &Environment{
+		Values: values,
+	}
 	return e
 }
