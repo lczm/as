@@ -11,7 +11,8 @@ import (
 func main() {
 	fmt.Println("as")
 
-	input := "print (5 * 2);"
+	// input := "print (5 * 2);"
+	input := "var a;"
 
 	fmt.Println("Input : ", input)
 

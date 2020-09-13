@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"fmt"
+
 	"github.com/lczm/as/token"
 )
 
@@ -219,6 +220,7 @@ func (l *Lexer) isKeyword(s string) bool {
 func New() *Lexer {
 	keywords := make(map[string]token.TokenType)
 	keywords["print"] = token.PRINT
+	keywords["var"] = token.VAR
 
 	l := &Lexer{
 		Keywords: keywords,
