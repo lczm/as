@@ -51,6 +51,7 @@ func TestIndividualTokenScan(t *testing.T) {
 
 		// Keywords
 		{"print", token.PRINT, "print"},
+		{"var", token.VAR, "var"},
 	}
 
 	lexer := New()
@@ -110,6 +111,12 @@ func TestMultipleTokenScan(t *testing.T) {
 				token.PLUS, token.IDENTIFIER, token.GT_EQ, token.LPAREN,
 				token.NUMBER, token.ASTERISK, token.NUMBER, token.RPAREN},
 			[]string{"abc1", "+", "abc2", "+", "abc_3", ">=", "(", "45", "*", "2", ")"},
+		},
+		{ // Keywords
+			`var a = 11; print a;`,
+			[]token.TokenType{token.VAR, token.IDENTIFIER, token.ASSIGN, token.NUMBER,
+				token.SEMICOLON, token.PRINT, token.IDENTIFIER, token.SEMICOLON},
+			[]string{"var", "a", "=", "11", ";", "print", "a", ";"},
 		},
 	}
 
