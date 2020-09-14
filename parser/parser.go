@@ -105,7 +105,6 @@ func (p *Parser) assignment() ast.Expression {
 		// Error out here.
 		panic(assignment)
 	}
-
 	return expr
 }
 

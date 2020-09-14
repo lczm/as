@@ -29,14 +29,16 @@ func (i *Interpreter) Start() {
 // ast.Expression at times.
 func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	switch node := astNode.(type) {
+	case *ast.StatementExpression:
+		return i.Eval(node.Expr)
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
 	case *ast.VariableStatement:
 		i.evalVariableStatement(node)
 	case *ast.VariableExpression:
 		return i.evalVariableExpression(node)
-	case *ast.StatementExpression:
-		return i.Eval(node.Expr)
+	case *ast.AssignmentExpression:
+		return i.evalAssignmentExpression(node)
 	case *ast.BinaryExpression:
 		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
@@ -68,14 +70,21 @@ func (i *Interpreter) evalVariableStatement(stmt *ast.VariableStatement) {
 	// Perhaps in the future, this can be changed to a null value of some sort.
 	if stmt.Initializer != nil {
 		initializerValue := i.Eval(stmt.Initializer)
-		i.Environment.Add(stmt.Name.Literal, initializerValue)
+		i.Environment.Set(stmt.Name.Literal, initializerValue)
 	} else {
-		i.Environment.Add(stmt.Name.Literal, &object.Integer{Value: 0})
+		i.Environment.Set(stmt.Name.Literal, &object.Integer{Value: 0})
 	}
 }
 
 func (i *Interpreter) evalVariableExpression(expr *ast.VariableExpression) object.Object {
 	return i.Environment.Get(expr.Name.Literal)
+}
+
+func (i *Interpreter) evalAssignmentExpression(expr *ast.AssignmentExpression) object.Object {
+	value := i.Eval(expr.Value)
+	i.Environment.Set(expr.Name.Literal, value)
+
+	return value
 }
 
 func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Object {
