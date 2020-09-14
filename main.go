@@ -19,9 +19,12 @@ func main() {
 	print a;
 	print b;
 	print a + b;
-
     a = 6;
     print a;
+
+    {
+        print 1;
+    }
 `
 
 	fmt.Println("Input : ", input)

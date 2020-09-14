@@ -31,6 +31,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	switch node := astNode.(type) {
 	case *ast.StatementExpression:
 		return i.Eval(node.Expr)
+	case *ast.BlockStatement:
+		i.evalBlockStatement(node)
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
 	case *ast.VariableStatement:
@@ -51,6 +53,10 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	}
 
 	return nil
+}
+
+func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
+	fmt.Println("Block statement")
 }
 
 func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {

@@ -57,6 +57,9 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
 		return p.printStatement()
 	}
+	if p.match(token.LBRACE) {
+		return p.blockStatement()
+	}
 
 	return p.expressionStatement()
 }
@@ -70,6 +73,24 @@ func (p *Parser) printStatement() ast.Statement {
 		Expr: expr,
 	}
 	return printStatement
+}
+
+func (p *Parser) blockStatement() ast.Statement {
+	var statements []ast.Statement
+
+	// Keep going until it hits the right brace - '}'.
+	for p.peek().Type != token.RBRACE {
+		statements = append(statements, p.declaration())
+	}
+
+	// Once the right brace is hit, move the parser past the
+	// right brace
+	p.eat(token.RBRACE, "Expect '}' after block.")
+
+	blockStatement := &ast.BlockStatement{
+		Statements: statements,
+	}
+	return blockStatement
 }
 
 func (p *Parser) expressionStatement() ast.Statement {

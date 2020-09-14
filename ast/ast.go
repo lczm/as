@@ -38,7 +38,7 @@ type VariableStatement struct {
 func (vs *VariableStatement) statement() {}
 
 type BlockStatement struct {
-	statements []Statement
+	Statements []Statement
 }
 
 func (bs *BlockStatement) statement() {}
