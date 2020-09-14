@@ -38,6 +38,16 @@ type VariableStatement struct {
 func (vs *VariableStatement) statement() {}
 
 // Expressions
+type AssignmentExpression struct {
+	Name  token.Token
+	Value Expression
+}
+
+func (ae *AssignmentExpression) expression() {}
+func (ae *AssignmentExpression) String() string {
+	return "Assignment Expression"
+}
+
 type BinaryExpression struct {
 	Left     Expression
 	Right    Expression

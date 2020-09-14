@@ -84,7 +84,29 @@ func (p *Parser) expressionStatement() ast.Statement {
 }
 
 func (p *Parser) expression() ast.Expression {
-	return p.equality()
+	return p.assignment()
+}
+
+func (p *Parser) assignment() ast.Expression {
+	expr := p.equality()
+
+	// Match for assignment
+	for p.match(token.ASSIGN) {
+		assignment := p.previous()
+		value := p.assignment()
+
+		if varExpr, ok := expr.(*ast.VariableExpression); ok {
+			return &ast.AssignmentExpression{
+				Name:  varExpr.Name,
+				Value: value,
+			}
+		}
+
+		// Error out here.
+		panic(assignment)
+	}
+
+	return expr
 }
 
 func (p *Parser) equality() ast.Expression {

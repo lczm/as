@@ -18,7 +18,11 @@ func main() {
 	var b = 5;
 	print a;
 	print b;
-	print a + b;`
+	print a + b;
+
+    a = 6;
+    print a;
+`
 
 	fmt.Println("Input : ", input)
 
