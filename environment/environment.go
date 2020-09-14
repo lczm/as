@@ -4,6 +4,7 @@ import "github.com/lczm/as/object"
 
 type Environment struct {
 	Values map[string]object.Object
+	Parent *Environment
 }
 
 // This method can potentially take in other context parameters
@@ -22,6 +23,17 @@ func New() *Environment {
 
 	e := &Environment{
 		Values: values,
+		Parent: nil,
+	}
+	return e
+}
+
+func NewChildEnvironment(parent *Environment) *Environment {
+	values := make(map[string]object.Object)
+
+	e := &Environment{
+		Values: values,
+		Parent: parent,
 	}
 	return e
 }
