@@ -22,6 +22,8 @@ func (l *Lexer) Scan(source string) []token.Token {
 
 		switch ch {
 		case ' ':
+		case '\t':
+		case '\n':
 			break
 		// Operators
 		case '+':
