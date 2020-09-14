@@ -57,6 +57,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 
 func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
 	fmt.Println("Block statement")
+	i.executeBlockStatements(stmt.Statements,
+		*environment.NewChildEnvironment(&i.Environment))
 }
 
 func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {
@@ -141,6 +143,22 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 		}
 	}
 	return nil
+}
+
+// This function will take in an environment as a block is scoped
+// to it's own environment.
+func (i *Interpreter) executeBlockStatements(
+	statements []ast.Statement,
+	environment environment.Environment) {
+	// Go does everything by value and not reference so this is fine.
+	previousEnvironment := i.Environment
+	i.Environment = environment
+
+	for _, stmt := range statements {
+		i.Eval(stmt)
+	}
+
+	i.Environment = previousEnvironment
 }
 
 func New(statements []ast.Statement) *Interpreter {
