@@ -70,9 +70,9 @@ func (i *Interpreter) evalVariableStatement(stmt *ast.VariableStatement) {
 	// Perhaps in the future, this can be changed to a null value of some sort.
 	if stmt.Initializer != nil {
 		initializerValue := i.Eval(stmt.Initializer)
-		i.Environment.Set(stmt.Name.Literal, initializerValue)
+		i.Environment.Define(stmt.Name.Literal, initializerValue)
 	} else {
-		i.Environment.Set(stmt.Name.Literal, &object.Integer{Value: 0})
+		i.Environment.Define(stmt.Name.Literal, &object.Integer{Value: 0})
 	}
 }
 
