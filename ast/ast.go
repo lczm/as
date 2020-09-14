@@ -37,6 +37,12 @@ type VariableStatement struct {
 
 func (vs *VariableStatement) statement() {}
 
+type BlockStatement struct {
+	statements []Statement
+}
+
+func (bs *BlockStatement) statement() {}
+
 // Expressions
 type AssignmentExpression struct {
 	Name  token.Token
