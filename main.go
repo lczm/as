@@ -38,6 +38,10 @@ func main() {
     } else {
         print 1000;
     }
+
+    if (5 >= 5) {
+        print 1000000;
+    }
 `
 
 	fmt.Println("Input : ", input)

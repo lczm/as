@@ -120,6 +120,38 @@ func TestMultipleTokenScan(t *testing.T) {
 				token.SEMICOLON, token.PRINT, token.IDENTIFIER, token.SEMICOLON},
 			[]string{"var", "a", "=", "11", ";", "print", "a", ";"},
 		},
+		{
+			`if (1 >= 2) print 1; else print 2;`,
+			[]token.TokenType{token.IF, token.LPAREN, token.NUMBER, token.GT_EQ, token.NUMBER,
+				token.RPAREN, token.PRINT, token.NUMBER, token.SEMICOLON, token.ELSE, token.PRINT,
+				token.NUMBER, token.SEMICOLON},
+			[]string{"if", "(", "1", ">=", "2", ")", "print", "1", ";",
+				"else", "print", "2", ";"},
+		},
+		{
+			`if (1 > 2) print 1; else print 2;`,
+			[]token.TokenType{token.IF, token.LPAREN, token.NUMBER, token.GT, token.NUMBER,
+				token.RPAREN, token.PRINT, token.NUMBER, token.SEMICOLON, token.ELSE, token.PRINT,
+				token.NUMBER, token.SEMICOLON},
+			[]string{"if", "(", "1", ">", "2", ")", "print", "1", ";",
+				"else", "print", "2", ";"},
+		},
+		{
+			`if (1 <= 2) print 1; else print 2;`,
+			[]token.TokenType{token.IF, token.LPAREN, token.NUMBER, token.LT_EQ, token.NUMBER,
+				token.RPAREN, token.PRINT, token.NUMBER, token.SEMICOLON, token.ELSE, token.PRINT,
+				token.NUMBER, token.SEMICOLON},
+			[]string{"if", "(", "1", "<=", "2", ")", "print", "1", ";",
+				"else", "print", "2", ";"},
+		},
+		{
+			`if (1 < 2) print 1; else print 2;`,
+			[]token.TokenType{token.IF, token.LPAREN, token.NUMBER, token.LT, token.NUMBER,
+				token.RPAREN, token.PRINT, token.NUMBER, token.SEMICOLON, token.ELSE, token.PRINT,
+				token.NUMBER, token.SEMICOLON},
+			[]string{"if", "(", "1", "<", "2", ")", "print", "1", ";",
+				"else", "print", "2", ";"},
+		},
 	}
 
 	lexer := New()
