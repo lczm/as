@@ -58,7 +58,7 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 }
 
 func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
-	if i.isTruthy(i.Eval(stmt.Condition)) {
+	if i.IsTruthy(i.Eval(stmt.Condition)) {
 		i.Eval(stmt.Then)
 		return
 	}
@@ -200,7 +200,7 @@ func (i *Interpreter) executeBlockStatements(
 
 // ---  Utility functions
 // This is where it is important to define what is truthy and what is not.
-func (i *Interpreter) isTruthy(obj object.Object) bool {
+func (i *Interpreter) IsTruthy(obj object.Object) bool {
 	// Check for booleans
 	if obj.Type() == object.BOOL {
 		return obj.(*object.Bool).Value
