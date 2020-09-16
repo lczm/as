@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/lczm/as/lexer"
-	"github.com/lczm/as/object"
 	"github.com/lczm/as/parser"
 )
 
@@ -66,23 +65,23 @@ func TestTruthy(t *testing.T) {
 		expectedOutput bool
 	}{
 		{
-			"0",
+			"0;",
 			false,
 		},
 		{
-			"1",
+			"1;",
 			true,
 		},
 		{
-			"1 > 2",
+			"1 > 2;",
 			false,
 		},
 		{
-			"2 >=2",
+			"2 >=2;",
 			true,
 		},
 		{
-			"3 > 2",
+			"3 > 2;",
 			true,
 		},
 	}
@@ -94,11 +93,11 @@ func TestTruthy(t *testing.T) {
 		statements := parser.Parse()
 
 		interpreter := New(statements)
-		obj := interpreter.Eval(statements[0])
+		b := interpreter.IsTruthy(interpreter.Eval(statements[0]))
 
-		if obj.(*object.Bool).Value != test.expectedOutput {
+		if b != test.expectedOutput {
 			t.Fatalf("Test: [%d] - Incorrect value, expected=%t, got=%t",
-				i, test.expectedOutput, obj.(*object.Bool).Value)
+				i, test.expectedOutput, b)
 		}
 	}
 }
