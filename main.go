@@ -26,6 +26,10 @@ func main() {
         print 1;
         print 1 + 2;
     }
+
+    if (1) {
+        print 500;
+    }
 `
 
 	fmt.Println("Input : ", input)

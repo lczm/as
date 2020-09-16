@@ -31,6 +31,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	switch node := astNode.(type) {
 	case *ast.StatementExpression:
 		return i.Eval(node.Expr)
+	case *ast.IfStatement:
+		i.evalIfStatement(node)
 	case *ast.BlockStatement:
 		i.evalBlockStatement(node)
 	case *ast.PrintStatement:
@@ -53,6 +55,20 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	}
 
 	return nil
+}
+
+func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
+	fmt.Println("If statement")
+
+	if i.isTruthy(stmt.Condition) {
+		i.Eval(stmt.Then)
+		return
+	}
+
+	if stmt.Else != nil {
+		i.Eval(stmt.Else)
+		return
+	}
 }
 
 func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
@@ -159,6 +175,22 @@ func (i *Interpreter) executeBlockStatements(
 	}
 
 	i.Environment = previousEnvironment
+}
+
+// ---  Utility functions
+// This is where it is important to define what is truthy and what is not.
+func (i *Interpreter) isTruthy(astNode ast.AstNode) bool {
+	switch node := astNode.(type) {
+	case *ast.NumberExpression:
+		// zeros are false
+		if node.Value == 0 {
+			return false
+		}
+		// any value that is not zero is true.
+		return true
+	}
+
+	return false
 }
 
 func New(statements []ast.Statement) *Interpreter {
