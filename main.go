@@ -11,8 +11,6 @@ import (
 func main() {
 	fmt.Println("as")
 
-	// input := "print (5 * 2);"
-	// input := "var a = 3; print a;"
 	input := `
 	var a = 3;
 	var b = 5;
@@ -29,6 +27,16 @@ func main() {
 
     if (1) {
         print 500;
+    }
+
+    if (2 > 1) {
+        print 600;
+    }
+
+    if (1 > 2) {
+        print 700;
+    } else {
+        print 1000;
     }
 `
 

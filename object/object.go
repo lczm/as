@@ -4,6 +4,7 @@ import "fmt"
 
 // Types
 const (
+	BOOL    = "BOOL"
 	INTEGER = "INTEGER"
 )
 
@@ -11,6 +12,22 @@ const (
 type Object interface {
 	Type() string
 	String() string
+}
+
+// Boolean type
+type Bool struct {
+	Value bool
+}
+
+func (b *Bool) Type() string {
+	return BOOL
+}
+
+func (b *Bool) String() string {
+	if b.Value == true {
+		return "true"
+	}
+	return "false"
 }
 
 // Integer type

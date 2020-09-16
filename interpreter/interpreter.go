@@ -58,9 +58,7 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 }
 
 func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
-	fmt.Println("If statement")
-
-	if i.isTruthy(stmt.Condition) {
+	if i.isTruthy(i.Eval(stmt.Condition)) {
 		i.Eval(stmt.Then)
 		return
 	}
@@ -72,7 +70,6 @@ func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
 }
 
 func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
-	fmt.Println("Block statement")
 	i.executeBlockStatements(stmt.Statements,
 		*environment.NewChildEnvironment(&i.Environment))
 }
@@ -142,6 +139,12 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 
 			return &object.Integer{Value: leftValue / rightValue}
 		}
+	case token.GT: // Greater than
+		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+			return &object.Bool{Value: leftValue > rightValue}
+		}
 	}
 
 	return nil
@@ -179,14 +182,18 @@ func (i *Interpreter) executeBlockStatements(
 
 // ---  Utility functions
 // This is where it is important to define what is truthy and what is not.
-func (i *Interpreter) isTruthy(astNode ast.AstNode) bool {
-	switch node := astNode.(type) {
-	case *ast.NumberExpression:
-		// zeros are false
-		if node.Value == 0 {
+func (i *Interpreter) isTruthy(obj object.Object) bool {
+	// Check for booleans
+	if obj.Type() == object.BOOL {
+		return obj.(*object.Bool).Value
+	}
+
+	if obj.Type() == object.INTEGER {
+		// If the value of the object is 0, it is falsey
+		if obj.(*object.Integer).Value == 0 {
 			return false
 		}
-		// any value that is not zero is true.
+		// If the value of the object is not 0, it is truthy
 		return true
 	}
 
