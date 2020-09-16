@@ -67,8 +67,31 @@ func (p *Parser) statement() ast.Statement {
 	return p.expressionStatement()
 }
 
+// this function in the future should also support else if statements.
+// this can be done by nesting if else {if else {if else}}
 func (p *Parser) ifStatement() ast.Statement {
-	return nil
+	// Condition
+	p.eat(token.LPAREN, "Expect '(' to start off if condition")
+	condition := p.expression()
+	p.eat(token.RPAREN, "Expect ')' to end off if condition")
+
+	// Then
+	thenStatement := p.statement()
+
+	// Else
+	var elseStatement ast.Statement = nil
+	if p.match(token.ELSE) {
+		p.eat(token.LBRACE, "Expect '{' to start off if block")
+		elseStatement = p.blockStatement()
+	}
+
+	ifStatement := &ast.IfStatement{
+		Condition: condition,
+		Then:      thenStatement,
+		Else:      elseStatement,
+	}
+
+	return ifStatement
 }
 
 func (p *Parser) printStatement() ast.Statement {

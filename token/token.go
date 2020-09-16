@@ -44,6 +44,7 @@ const (
 	PRINT = "PRINT"
 	VAR   = "VAR"
 	IF    = "IF"
+	ELSE  = "ELSE"
 
 	// Misc
 	EOF = "EOF"

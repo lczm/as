@@ -224,6 +224,7 @@ func New() *Lexer {
 	keywords["print"] = token.PRINT
 	keywords["var"] = token.VAR
 	keywords["if"] = token.IF
+	keywords["else"] = token.ELSE
 
 	l := &Lexer{
 		Keywords: keywords,
