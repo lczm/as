@@ -30,6 +30,14 @@ type PrintStatement struct {
 
 func (pe *PrintStatement) statement() {}
 
+type IfStatement struct {
+	Condition Expression
+	Then      Statement
+	Else      Statement
+}
+
+func (is *IfStatement) statement() {}
+
 type VariableStatement struct {
 	Name        token.Token
 	Initializer Expression

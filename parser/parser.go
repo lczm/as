@@ -54,6 +54,9 @@ func (p *Parser) varDeclaration() ast.Statement {
 }
 
 func (p *Parser) statement() ast.Statement {
+	if p.match(token.IF) {
+		return p.ifStatement()
+	}
 	if p.match(token.PRINT) {
 		return p.printStatement()
 	}
@@ -62,6 +65,10 @@ func (p *Parser) statement() ast.Statement {
 	}
 
 	return p.expressionStatement()
+}
+
+func (p *Parser) ifStatement() ast.Statement {
+	return nil
 }
 
 func (p *Parser) printStatement() ast.Statement {

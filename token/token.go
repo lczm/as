@@ -43,6 +43,7 @@ const (
 	// Statements
 	PRINT = "PRINT"
 	VAR   = "VAR"
+	IF    = "IF"
 
 	// Misc
 	EOF = "EOF"

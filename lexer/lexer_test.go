@@ -52,6 +52,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		// Keywords
 		{"print", token.PRINT, "print"},
 		{"var", token.VAR, "var"},
+		{"if", token.IF, "if"},
 	}
 
 	lexer := New()
