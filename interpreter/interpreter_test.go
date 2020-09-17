@@ -108,16 +108,31 @@ func TestIfStatements(t *testing.T) {
 		expectedOutput string
 	}{
 		{
-			`
-            var output;
-
+			`var output;
             if (5 > 1) {
                 output = 5;
             } else {
                 output = 1;
-            }
-            `,
+            }`,
 			"5",
+		},
+		{
+			`var output;
+			if (5 >= 5) {
+				output = 5;
+			} else {
+				output = 1;
+			}`,
+			"5",
+		},
+		{
+			`var output;
+			if (5 > 6) {
+				output = 5;
+			} else {
+				output = 1;
+			}`,
+			"1",
 		},
 	}
 
