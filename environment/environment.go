@@ -20,6 +20,8 @@ func (e *Environment) Set(name string, value object.Object) {
 		return
 	}
 
+	// If it does not exist in the current environment, go up
+	// the parents
 	if e.Parent != nil {
 		e.Parent.Set(name, value)
 		return
@@ -42,6 +44,15 @@ func (e *Environment) Get(name string) object.Object {
 	}
 
 	panic("Name not found in environment : Get")
+}
+
+// Check if a name exists within the environment.
+func (e *Environment) Exists(name string) bool {
+	_, ok := e.Values[name]
+	if ok {
+		return true
+	}
+	return false
 }
 
 func New() *Environment {

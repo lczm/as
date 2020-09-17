@@ -102,9 +102,43 @@ func TestTruthy(t *testing.T) {
 	}
 }
 
-// func TestIfStatements(t *testing.T) {
-// 	tests := []struct {
-// 		input          string
-// 		expectedOutput object.Object
-// 	}{}
-// }
+func TestIfStatements(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput string
+	}{
+		{
+			`
+            var output;
+
+            if (5 > 1) {
+                output = 5;
+            } else {
+                output = 1;
+            }
+            `,
+			"5",
+		},
+	}
+
+	outputVariable := "output"
+
+	lexer := lexer.New()
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		interpreter.Start()
+
+		// Directly hook into the environment to check for output variable.
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+			if obj.String() != test.expectedOutput {
+				t.Fatalf("Test: [%d] - Incorrect value, expected=%s, got=%s",
+					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}

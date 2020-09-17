@@ -10,7 +10,7 @@ import (
 )
 
 type Interpreter struct {
-	Environment environment.Environment
+	Environment *environment.Environment
 	Statements  []ast.Statement
 }
 
@@ -70,8 +70,9 @@ func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
 }
 
 func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
-	i.executeBlockStatements(stmt.Statements,
-		*environment.NewChildEnvironment(&i.Environment))
+	childEnvironment := environment.NewChildEnvironment(i.Environment)
+
+	i.executeBlockStatements(stmt.Statements, childEnvironment)
 }
 
 func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {
@@ -186,10 +187,13 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 // to it's own environment.
 func (i *Interpreter) executeBlockStatements(
 	statements []ast.Statement,
-	environment environment.Environment) {
+	environment *environment.Environment) {
+
 	// Go does everything by value and not reference so this is fine.
 	previousEnvironment := i.Environment
 	i.Environment = environment
+
+	fmt.Println("Hello")
 
 	for _, stmt := range statements {
 		i.Eval(stmt)
@@ -223,7 +227,7 @@ func New(statements []ast.Statement) *Interpreter {
 
 	i := &Interpreter{
 		Statements:  statements,
-		Environment: *environment,
+		Environment: environment,
 	}
 	return i
 }
