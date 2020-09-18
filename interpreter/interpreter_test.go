@@ -137,8 +137,8 @@ func TestIfStatements(t *testing.T) {
 	}
 
 	outputVariable := "output"
-
 	lexer := lexer.New()
+
 	for i, test := range tests {
 		tokens := lexer.Scan(test.input)
 		parser := parser.New(tokens)
@@ -148,6 +148,42 @@ func TestIfStatements(t *testing.T) {
 		interpreter.Start()
 
 		// Directly hook into the environment to check for output variable.
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+			if obj.String() != test.expectedOutput {
+				t.Fatalf("Test: [%d] - Incorrect value, expected=%s, got=%s",
+					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}
+
+func TestWhileStatements(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput string
+	}{
+		{
+			`var output = 0;
+            while (output < 10) {
+                output = output + 1;
+            }`,
+			"10",
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		interpreter.Start()
+
+		// Directly hook into the environment to check for output variable
 		if interpreter.Environment.Exists(outputVariable) {
 			obj := interpreter.Environment.Get(outputVariable)
 			if obj.String() != test.expectedOutput {
