@@ -25,6 +25,10 @@ const (
 	EQ     = "=="
 	NOT_EQ = "!="
 
+	// Logical Operators
+	AND = "&&"
+	OR  = "||"
+
 	// Delimiters
 	COMMA     = ","
 	COLON     = ":"

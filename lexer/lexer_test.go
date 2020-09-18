@@ -49,6 +49,10 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"abc2", token.IDENTIFIER, "abc2"},
 		{"abc2_5", token.IDENTIFIER, "abc2_5"},
 
+		// Logical Operators
+		{"&&", token.AND, "&&"},
+		{"||", token.OR, "||"},
+
 		// Keywords
 		{"print", token.PRINT, "print"},
 		{"var", token.VAR, "var"},
@@ -151,6 +155,13 @@ func TestMultipleTokenScan(t *testing.T) {
 				token.NUMBER, token.SEMICOLON},
 			[]string{"if", "(", "1", "<", "2", ")", "print", "1", ";",
 				"else", "print", "2", ";"},
+		},
+		{
+			`if (5 > 1 && 5 > 2) { print 2; }`,
+			[]token.TokenType{token.IF, token.LPAREN, token.NUMBER, token.GT, token.NUMBER,
+				token.AND, token.NUMBER, token.GT, token.NUMBER, token.RPAREN,
+				token.LBRACE, token.PRINT, token.NUMBER, token.SEMICOLON, token.RBRACE},
+			[]string{"if", "(", "5", ">", "1", "&&", "5", ">", "2", ")", "{", "print", "2", ";", "}"},
 		},
 	}
 

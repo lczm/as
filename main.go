@@ -12,7 +12,6 @@ func main() {
 	fmt.Println("as")
 
 	input := `
-
     var output;
     output = 3;
 
@@ -21,6 +20,10 @@ func main() {
     } else {
 		output = 10;
 	}
+
+    if (5 > 1 && 4 > 1) {
+        print 1000;
+    }
 
     print output;
 `

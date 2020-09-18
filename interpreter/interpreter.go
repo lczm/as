@@ -47,6 +47,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
 		return i.evalUnaryExpression(node)
+	case *ast.LogicalExpression:
+		return i.evalLogicalExpression(node)
 	case *ast.NumberExpression:
 		numberValue := int64(node.Value)
 		return &object.Integer{Value: numberValue}
@@ -181,6 +183,20 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 		}
 	}
 	return nil
+}
+
+func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.Object {
+	if expr.Operator.Type == token.AND {
+		return &object.Bool{
+			Value: i.IsTruthy(i.Eval(expr.Left)) && i.IsTruthy(i.Eval(expr.Right)),
+		}
+	} else if expr.Operator.Type == token.OR {
+		return &object.Bool{
+			Value: i.IsTruthy(i.Eval(expr.Left)) || i.IsTruthy(i.Eval(expr.Right)),
+		}
+	} else {
+		panic("LogicalExpression has a operator that is not supported")
+	}
 }
 
 // This function will take in an environment as a block is scoped

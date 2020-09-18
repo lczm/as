@@ -83,6 +83,17 @@ func (ue *UnaryExpression) String() string {
 	return "Unary Expression"
 }
 
+type LogicalExpression struct {
+	Left     Expression
+	Right    Expression
+	Operator token.Token
+}
+
+func (le *LogicalExpression) expression() {}
+func (le *LogicalExpression) String() string {
+	return "Logical Expression"
+}
+
 type NumberExpression struct {
 	Value int
 }

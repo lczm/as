@@ -101,6 +101,27 @@ func (l *Lexer) Scan(source string) []token.Token {
 					Literal: "=",
 				})
 			}
+		// Logical Comparisons
+		case '&':
+			if source[currentIndex] == '&' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AND,
+					Literal: "&&",
+				})
+				currentIndex++
+			} else {
+				panic("Single '&' character cannot be lexed")
+			}
+		case '|':
+			if source[currentIndex] == '|' {
+				tokens = append(tokens, token.Token{
+					Type:    token.OR,
+					Literal: "||",
+				})
+				currentIndex++
+			} else {
+				panic("Single '|' character cannot be lexed")
+			}
 		// Delimiters
 		case ',':
 			tokens = append(tokens, token.Token{
