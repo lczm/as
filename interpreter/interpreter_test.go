@@ -205,6 +205,13 @@ func TestForStatements(t *testing.T) {
             }`,
 			"3",
 		},
+		{
+			`
+            for (var output = 10; output != 2; output = output - 1) {
+            }
+            `,
+			"2",
+		},
 	}
 
 	outputVariable := "output"
