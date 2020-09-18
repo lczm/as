@@ -58,6 +58,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"var", token.VAR, "var"},
 		{"if", token.IF, "if"},
 		{"else", token.ELSE, "else"},
+		{"while", token.WHILE, "while"},
 	}
 
 	lexer := New()
@@ -162,6 +163,12 @@ func TestMultipleTokenScan(t *testing.T) {
 				token.AND, token.NUMBER, token.GT, token.NUMBER, token.RPAREN,
 				token.LBRACE, token.PRINT, token.NUMBER, token.SEMICOLON, token.RBRACE},
 			[]string{"if", "(", "5", ">", "1", "&&", "5", ">", "2", ")", "{", "print", "2", ";", "}"},
+		},
+		{
+			`while (a < 5) {};`,
+			[]token.TokenType{token.WHILE, token.LPAREN, token.IDENTIFIER, token.LT, token.NUMBER,
+				token.RPAREN, token.LBRACE, token.RBRACE, token.SEMICOLON},
+			[]string{"while", "(", "a", "<", "5", ")", "{", "}", ";"},
 		},
 	}
 

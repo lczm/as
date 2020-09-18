@@ -45,6 +45,13 @@ type VariableStatement struct {
 
 func (vs *VariableStatement) statement() {}
 
+type WhileStatement struct {
+	Condition Expression
+	Body      Statement
+}
+
+func (ws *WhileStatement) statement() {}
+
 type BlockStatement struct {
 	Statements []Statement
 }

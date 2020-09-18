@@ -49,6 +49,7 @@ const (
 	VAR   = "VAR"
 	IF    = "IF"
 	ELSE  = "ELSE"
+	WHILE = "WHILE"
 
 	// Misc
 	EOF = "EOF"
