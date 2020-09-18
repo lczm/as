@@ -190,6 +190,18 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue <= rightValue}
 		}
+	case token.EQ: // Equals '=='
+		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+			return &object.Bool{Value: leftValue == rightValue}
+		}
+	case token.NOT_EQ: // Not equals '!='
+		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+			return &object.Bool{Value: leftValue != rightValue}
+		}
 	}
 
 	return nil
