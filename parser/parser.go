@@ -60,6 +60,9 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
 		return p.printStatement()
 	}
+	if p.match(token.WHILE) {
+		return p.whileStatement()
+	}
 	if p.match(token.LBRACE) {
 		return p.blockStatement()
 	}
@@ -103,6 +106,21 @@ func (p *Parser) printStatement() ast.Statement {
 		Expr: expr,
 	}
 	return printStatement
+}
+
+func (p *Parser) whileStatement() ast.Statement {
+	p.eat(token.LPAREN, "Expect '(' after while.")
+	condition := p.expression()
+
+	p.eat(token.RPAREN, "Expect, ')' after condition of while.")
+	// This should most likely be a block statement
+	body := p.statement()
+
+	whileStatement := &ast.WhileStatement{
+		Condition: condition,
+		Body:      body,
+	}
+	return whileStatement
 }
 
 func (p *Parser) blockStatement() ast.Statement {

@@ -33,6 +33,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.Eval(node.Expr)
 	case *ast.IfStatement:
 		i.evalIfStatement(node)
+	case *ast.WhileStatement:
+		i.evalWhileStatement(node)
 	case *ast.BlockStatement:
 		i.evalBlockStatement(node)
 	case *ast.PrintStatement:
@@ -68,6 +70,12 @@ func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
 	if stmt.Else != nil {
 		i.Eval(stmt.Else)
 		return
+	}
+}
+
+func (i *Interpreter) evalWhileStatement(stmt *ast.WhileStatement) {
+	for i.IsTruthy(i.Eval(stmt.Condition)) {
+		i.Eval(stmt.Body)
 	}
 }
 

@@ -12,20 +12,11 @@ func main() {
 	fmt.Println("as")
 
 	input := `
-    var output;
-    output = 3;
-
-    if (5 > 1) {
-        output = 5;
-    } else {
-		output = 10;
-	}
-
-    if (5 > 1 && 4 > 1) {
-        print 1000;
+    var jasper = 0;
+    while (jasper < 10) {
+        print 123;
+        jasper = jasper + 1;
     }
-
-    print output;
 `
 
 	fmt.Println("Input : ", input)
