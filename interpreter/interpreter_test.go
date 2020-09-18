@@ -193,3 +193,38 @@ func TestWhileStatements(t *testing.T) {
 		}
 	}
 }
+
+func TestForStatements(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput string
+	}{
+		{
+			`
+            for (var output = 0; output < 3; output = output + 1) {
+            }`,
+			"3",
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		interpreter.Start()
+
+		// Directly hook into the environment to check for outpit variable
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+			if obj.String() != test.expectedOutput {
+				t.Fatalf("Test: [%d] - Incorrect value, expected=%s, got=%s",
+					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}
