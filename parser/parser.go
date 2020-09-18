@@ -60,6 +60,9 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
 		return p.printStatement()
 	}
+	if p.match(token.FOR) {
+		return p.forStatement()
+	}
 	if p.match(token.WHILE) {
 		return p.whileStatement()
 	}
@@ -108,8 +111,51 @@ func (p *Parser) printStatement() ast.Statement {
 	return printStatement
 }
 
+func (p *Parser) forStatement() ast.Statement {
+	p.eat(token.LPAREN, "Expect '(' after for.")
+
+	// Variable section of for loops
+	var variable ast.Statement = nil
+	// for (var {x};
+	if p.match(token.VAR) {
+		// This will be a variableStatement
+		variable = p.varDeclaration()
+		if variable.(*ast.VariableStatement).Initializer == nil {
+			panic("Cannot have uninitialized variable in a 'for' statement")
+		}
+	} else { // Existing variable, for({x};)
+		variable = p.expressionStatement()
+	}
+	p.eat(token.SEMICOLON, "Expect ';' after variable in a 'for' statement")
+
+	// Condition section of for loops
+	var condition ast.Expression = nil
+	condition = p.expression()
+	p.eat(token.SEMICOLON, "Expect ';' after condition in a 'for' statement")
+
+	// Effect (Usually its the increment, but since it can also be decreasing
+	// I thought that 'Effect' sounded better)
+	var effect ast.Expression = nil
+	effect = p.expression()
+	p.eat(token.SEMICOLON, "Expect ';' after effect in a 'for' statement")
+
+	// Block statement
+	body := p.statement()
+
+	p.eat(token.RPAREN, "Expect ')' after for statement.")
+
+	forStatement := &ast.ForStatement{
+		Variable:  variable,
+		Condition: condition,
+		Effect:    effect,
+		Body:      body,
+	}
+	return forStatement
+}
+
 func (p *Parser) whileStatement() ast.Statement {
 	p.eat(token.LPAREN, "Expect '(' after while.")
+
 	condition := p.expression()
 
 	p.eat(token.RPAREN, "Expect, ')' after condition of while.")
