@@ -193,8 +193,6 @@ func (i *Interpreter) executeBlockStatements(
 	previousEnvironment := i.Environment
 	i.Environment = environment
 
-	fmt.Println("Hello")
-
 	for _, stmt := range statements {
 		i.Eval(stmt)
 	}
