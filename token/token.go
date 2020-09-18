@@ -50,6 +50,7 @@ const (
 	IF    = "IF"
 	ELSE  = "ELSE"
 	WHILE = "WHILE"
+	FOR   = "FOR"
 
 	// Misc
 	EOF = "EOF"

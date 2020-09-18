@@ -52,6 +52,15 @@ type WhileStatement struct {
 
 func (ws *WhileStatement) statement() {}
 
+type ForStatement struct {
+	Variable  Statement
+	Condition Expression
+	Effect    Expression
+	Body      Statement
+}
+
+func (fs *ForStatement) statement() {}
+
 type BlockStatement struct {
 	Statements []Statement
 }

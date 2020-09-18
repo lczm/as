@@ -247,6 +247,7 @@ func New() *Lexer {
 	keywords["if"] = token.IF
 	keywords["else"] = token.ELSE
 	keywords["while"] = token.WHILE
+	keywords["for"] = token.FOR
 
 	l := &Lexer{
 		Keywords: keywords,
