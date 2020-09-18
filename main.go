@@ -12,14 +12,8 @@ func main() {
 	fmt.Println("as")
 
 	input := `
-    var jasper = 0;
-    while (jasper < 10) {
-        print 123;
-        jasper = jasper + 1;
-    }
-
     for (var i = 0; i < 10; i = i + 1) {
-        print 321;
+        print i;
     }
 `
 
