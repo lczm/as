@@ -126,23 +126,21 @@ func (p *Parser) forStatement() ast.Statement {
 	} else { // Existing variable, for({x};)
 		variable = p.expressionStatement()
 	}
-	p.eat(token.SEMICOLON, "Expect ';' after variable in a 'for' statement")
 
 	// Condition section of for loops
 	var condition ast.Expression = nil
 	condition = p.expression()
-	p.eat(token.SEMICOLON, "Expect ';' after condition in a 'for' statement")
+	p.eat(token.SEMICOLON, "Expect ';' after condition in 'for' statement")
 
 	// Effect (Usually its the increment, but since it can also be decreasing
 	// I thought that 'Effect' sounded better)
 	var effect ast.Expression = nil
 	effect = p.expression()
-	p.eat(token.SEMICOLON, "Expect ';' after effect in a 'for' statement")
+
+	p.eat(token.RPAREN, "Expect ')' after 'for' statement.")
 
 	// Block statement
 	body := p.statement()
-
-	p.eat(token.RPAREN, "Expect ')' after for statement.")
 
 	forStatement := &ast.ForStatement{
 		Variable:  variable,

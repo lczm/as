@@ -17,6 +17,10 @@ func main() {
         print 123;
         jasper = jasper + 1;
     }
+
+    for (var i = 0; i < 10; i = i + 1) {
+        print 321;
+    }
 `
 
 	fmt.Println("Input : ", input)

@@ -33,6 +33,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.Eval(node.Expr)
 	case *ast.IfStatement:
 		i.evalIfStatement(node)
+	case *ast.ForStatement:
+		i.evalForStatement(node)
 	case *ast.WhileStatement:
 		i.evalWhileStatement(node)
 	case *ast.BlockStatement:
@@ -70,6 +72,20 @@ func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
 	if stmt.Else != nil {
 		i.Eval(stmt.Else)
 		return
+	}
+}
+
+func (i *Interpreter) evalForStatement(stmt *ast.ForStatement) {
+	// Initialize the variable first.
+	i.Eval(stmt.Variable)
+
+	for i.IsTruthy(i.Eval(stmt.Condition)) {
+		// Evaluate the body expression
+		i.Eval(stmt.Body)
+
+		// Afterwards run the effect
+		// This is also where a pre vs post increment can be done.
+		i.Eval(stmt.Effect)
 	}
 }
 
