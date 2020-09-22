@@ -109,11 +109,8 @@ func (p *Parser) functionStatement(functionType string) ast.Statement {
 	// function(a, b, c) { }
 	p.eat(token.LBRACE, "Expect '{' to start off the body of a function declaration")
 
+	// Cast ast.Statement into a ast.BlockStatement
 	body := p.blockStatement().(*ast.BlockStatement)
-	// body, ok = body.(*ast.BlockStatement)
-	// if !ok {
-	// 	panic("Body found in function declaration is not a block statement.")
-	// }
 
 	functionStatement := &ast.FunctionStatement{
 		Name:   name,

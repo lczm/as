@@ -2,6 +2,8 @@ package object
 
 import (
 	"fmt"
+
+	"github.com/lczm/as/ast"
 )
 
 // Types
@@ -51,3 +53,21 @@ func (i *Integer) Type() string {
 func (i *Integer) String() string {
 	return fmt.Sprintf("%d", i.Value)
 }
+
+// Function type, it is an Object as well as a Callable
+type Function struct {
+	FunctionStatement ast.FunctionStatement
+}
+
+func (f *Function) Type() string {
+	return FUNCTION
+}
+
+func (f *Function) String() string {
+	return fmt.Sprintf("Function : <%s>", f.FunctionStatement.Name.Literal)
+}
+
+// The call functions should return an object
+// in the case of something like
+// var x = function(...)
+func (f *Function) Call() {}

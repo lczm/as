@@ -39,6 +39,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		i.evalWhileStatement(node)
 	case *ast.BlockStatement:
 		i.evalBlockStatement(node)
+	case *ast.FunctionStatement:
+		i.evalFunctionStatement(node)
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
 	case *ast.VariableStatement:
@@ -103,12 +105,21 @@ func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
 	i.ExecuteBlockStatements(stmt.Statements, childEnvironment)
 }
 
+func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
+	functionObject := &object.Function{
+		FunctionStatement: *stmt,
+	}
+	i.Environment.Define(stmt.Name.Literal, functionObject)
+}
+
 func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {
 	// This is also a default value for returning values from a print statement.
 	// Which allows for code such as `var a = print(3);` to work
 
 	objectValue := i.Eval(stmt.Expr)
-	fmt.Println(objectValue.String())
+	str := objectValue.String()
+
+	fmt.Println(str)
 	return nil
 }
 
