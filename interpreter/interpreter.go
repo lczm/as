@@ -32,13 +32,13 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	case *ast.StatementExpression:
 		return i.Eval(node.Expr)
 	case *ast.IfStatement:
-		i.evalIfStatement(node)
+		return i.evalIfStatement(node)
 	case *ast.ForStatement:
 		i.evalForStatement(node)
 	case *ast.WhileStatement:
 		i.evalWhileStatement(node)
 	case *ast.BlockStatement:
-		i.evalBlockStatement(node)
+		return i.evalBlockStatement(node)
 	case *ast.FunctionStatement:
 		i.evalFunctionStatement(node)
 	case *ast.PrintStatement:
@@ -69,16 +69,15 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	return nil
 }
 
-func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) {
+func (i *Interpreter) evalIfStatement(stmt *ast.IfStatement) object.Object {
 	if i.IsTruthy(i.Eval(stmt.Condition)) {
-		i.Eval(stmt.Then)
-		return
+		return i.Eval(stmt.Then)
 	}
 
 	if stmt.Else != nil {
-		i.Eval(stmt.Else)
-		return
+		return i.Eval(stmt.Else)
 	}
+	return nil
 }
 
 func (i *Interpreter) evalForStatement(stmt *ast.ForStatement) {
@@ -101,10 +100,10 @@ func (i *Interpreter) evalWhileStatement(stmt *ast.WhileStatement) {
 	}
 }
 
-func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) {
+func (i *Interpreter) evalBlockStatement(stmt *ast.BlockStatement) object.Object {
 	childEnvironment := environment.NewChildEnvironment(i.Environment)
 
-	i.ExecuteBlockStatements(stmt.Statements, childEnvironment)
+	return i.ExecuteBlockStatements(stmt.Statements, childEnvironment)
 }
 
 func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
@@ -293,7 +292,7 @@ func (i *Interpreter) ExecuteBlockStatements(
 
 		// If the object returned from evaluation is a return object
 		// break out of the evaluation loop and return it.
-		_, ok := obj.(*object.Return)
+		obj, ok := obj.(*object.Return)
 		if ok {
 			// Reset the environment back to the previous one.
 			i.Environment = previousEnvironment
