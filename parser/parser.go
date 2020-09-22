@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/lczm/as/ast"
@@ -401,8 +400,6 @@ func (p *Parser) call() ast.Expression {
 				Callee:    expr,
 				Arguments: arguments,
 			}
-
-			fmt.Println("Hello")
 		} else {
 			break
 		}

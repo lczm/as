@@ -249,17 +249,25 @@ func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.
 }
 
 func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object {
-	callee := i.Eval(expr.Callee)
-	fmt.Println(callee.String())
+	function, ok := i.Eval(expr.Callee).(*object.Function)
+	if !ok {
+		panic("Call expression callee is not a declared function")
+	}
+
+	var evaluatedArguments []object.Object
+	for _, argument := range expr.Arguments {
+		evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
+	}
+
+	environment := environment.NewChildEnvironment(i.Environment)
+	for i, argument := range evaluatedArguments {
+		environment.Define(function.FunctionStatement.Params[i].Literal,
+			argument)
+	}
+
+	i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
+
 	return nil
-
-	// var evaluatedArguments []object.Object
-	// for _, argument := range expr.Arguments {
-	// 	evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
-	// }
-
-	// function := makeFunction(callee)
-	// return nil
 }
 
 // ---  Utility functions

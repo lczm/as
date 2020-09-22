@@ -12,9 +12,11 @@ func main() {
 	fmt.Println("as")
 
 	input := `
-    function test(a, b) {}
+    function sum(a, b) {
+        print a + b;
+    }
 
-    print test;
+    sum(1, 2);
 `
 
 	fmt.Println("Input : ", input)
