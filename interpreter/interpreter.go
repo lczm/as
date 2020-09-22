@@ -58,6 +58,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return &object.Integer{Value: numberValue}
 	case *ast.GroupExpression:
 		return i.Eval(node.Expr)
+	case *ast.CallExpression:
+		return i.evalCallExpression(node)
 	}
 
 	return nil
@@ -235,6 +237,21 @@ func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.
 	}
 }
 
+func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object {
+	callee := i.Eval(expr.Callee)
+	fmt.Println(callee.String())
+	return nil
+
+	// var evaluatedArguments []object.Object
+	// for _, argument := range expr.Arguments {
+	// 	evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
+	// }
+
+	// function := makeFunction(callee)
+	// return nil
+}
+
+// ---  Utility functions
 // This function will take in an environment as a block is scoped
 // to it's own environment.
 func (i *Interpreter) executeBlockStatements(
@@ -252,7 +269,6 @@ func (i *Interpreter) executeBlockStatements(
 	i.Environment = previousEnvironment
 }
 
-// ---  Utility functions
 // This is where it is important to define what is truthy and what is not.
 func (i *Interpreter) IsTruthy(obj object.Object) bool {
 	// Check for booleans
@@ -270,6 +286,9 @@ func (i *Interpreter) IsTruthy(obj object.Object) bool {
 	}
 
 	return false
+}
+
+func (i *Interpreter) makeFunction(object.Object) {
 }
 
 func New(statements []ast.Statement) *Interpreter {

@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/lczm/as/ast"
@@ -324,7 +325,43 @@ func (p *Parser) unary() ast.Expression {
 			Operator: operator,
 		}
 	}
-	return p.primary()
+	return p.call()
+}
+
+func (p *Parser) call() ast.Expression {
+	expr := p.primary()
+
+	for {
+		// If it is a left paren : '(<argument>, <argument>)
+		if p.match(token.LPAREN) {
+			var arguments []ast.Expression
+			// While it is not a right paren to end off the function
+			for !p.match(token.RPAREN) {
+				// Add an argument as it is not empty
+				arguments = append(arguments, p.expression())
+				// If it does not match a comma, break out of this.
+				if !p.match(token.COMMA) {
+					break
+				}
+			}
+
+			// Here is where the parser can check for other calls that may
+			// be useful in the future.
+			// i.e. Maximum len of arguments
+
+			// Check that it ends with a ')'
+			p.eat(token.RPAREN, "Expect ')' after arguments.")
+			expr = &ast.CallExpression{
+				Callee:    expr,
+				Arguments: arguments,
+			}
+
+			fmt.Println("Hello")
+		} else {
+			break
+		}
+	}
+	return expr
 }
 
 func (p *Parser) primary() ast.Expression {

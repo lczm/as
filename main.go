@@ -12,9 +12,7 @@ func main() {
 	fmt.Println("as")
 
 	input := `
-    for (var i = 0; i < 3; i = i + 1) {
-    }
-    print i;
+    testFunction(1, 2);
 `
 
 	fmt.Println("Input : ", input)

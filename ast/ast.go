@@ -136,3 +136,13 @@ func (ve *VariableExpression) expression() {}
 func (ve *VariableExpression) String() string {
 	return "VariableExpression"
 }
+
+type CallExpression struct {
+	Callee    Expression
+	Arguments []Expression
+}
+
+func (ce *CallExpression) expression() {}
+func (ce *CallExpression) String() string {
+	return "CallExpression"
+}
