@@ -15,32 +15,25 @@ func main() {
 
     function fib(n) {
         if (n <= 1) {
+            print n;
             return n;
         }
         return fib(n - 2) + fib(n - 1);
     }
 
-    function test(a) {
-        if (a <= 1) {
-            return a;
-        } else {
-            return a;
+    function sum_two(a, b) {
+        return a + b;
+    }
+
+    function sum_four(a, b, c, d) {
+        if (a + b <= 5) {
+            return sum_two(10, 10);
         }
+        return sum_two(a + b, c + d);
     }
 
-    function sum(a, b) {
-        var c = a + b;
-        return c;
-    }
-
-    var a = sum(1, 2);
+    var a = sum_four(1, 2, 3, 4);
     print a;
-
-    var b = test(1);
-    print b;
-
-    var c = fib(2);
-    print c;
 `
 
 	fmt.Println("Input : ", input)

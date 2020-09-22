@@ -287,16 +287,17 @@ func (i *Interpreter) ExecuteBlockStatements(
 	previousEnvironment := i.Environment
 	i.Environment = environment
 
-	for _, stmt := range statements {
+	for index, stmt := range statements {
 		obj := i.Eval(stmt)
+		fmt.Println("Hello", index, obj.String(), obj.Type())
 
 		// If the object returned from evaluation is a return object
 		// break out of the evaluation loop and return it.
-		obj, ok := obj.(*object.Return)
+		returnObj, ok := obj.(*object.Return)
 		if ok {
 			// Reset the environment back to the previous one.
 			i.Environment = previousEnvironment
-			return obj
+			return returnObj.Value
 		}
 	}
 
