@@ -52,6 +52,7 @@ const (
 	WHILE    = "WHILE"
 	FOR      = "FOR"
 	FUNCTION = "FUNCTION"
+	RETURN   = "RETURN"
 
 	// Misc
 	EOF = "EOF"

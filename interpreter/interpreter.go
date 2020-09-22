@@ -43,6 +43,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		i.evalFunctionStatement(node)
 	case *ast.PrintStatement:
 		return i.evalPrintStatement(node)
+	case *ast.ReturnStatement:
+		return i.evalReturnStatement(node)
 	case *ast.VariableStatement:
 		i.evalVariableStatement(node)
 	case *ast.VariableExpression:
@@ -121,6 +123,13 @@ func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object
 
 	fmt.Println(str)
 	return nil
+}
+
+func (i *Interpreter) evalReturnStatement(stmt *ast.ReturnStatement) object.Object {
+	if stmt.Value == nil {
+		return nil
+	}
+	return &object.Return{Value: i.Eval(stmt.Value)}
 }
 
 func (i *Interpreter) evalVariableStatement(stmt *ast.VariableStatement) {
@@ -265,9 +274,7 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 			argument)
 	}
 
-	i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
-
-	return nil
+	return i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
 }
 
 // ---  Utility functions
@@ -275,17 +282,27 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 // to it's own environment.
 func (i *Interpreter) ExecuteBlockStatements(
 	statements []ast.Statement,
-	environment *environment.Environment) {
+	environment *environment.Environment) object.Object {
 
 	// Go does everything by value and not reference so this is fine.
 	previousEnvironment := i.Environment
 	i.Environment = environment
 
 	for _, stmt := range statements {
-		i.Eval(stmt)
+		obj := i.Eval(stmt)
+
+		// If the object returned from evaluation is a return object
+		// break out of the evaluation loop and return it.
+		_, ok := obj.(*object.Return)
+		if ok {
+			// Reset the environment back to the previous one.
+			i.Environment = previousEnvironment
+			return obj
+		}
 	}
 
 	i.Environment = previousEnvironment
+	return nil
 }
 
 // This is where it is important to define what is truthy and what is not.

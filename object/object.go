@@ -11,6 +11,7 @@ const (
 	BOOL     = "BOOL"
 	INTEGER  = "INTEGER"
 	FUNCTION = "FUNCTION"
+	RETURN   = "RETURN"
 )
 
 // All types implement this interface
@@ -71,3 +72,16 @@ func (f *Function) String() string {
 // in the case of something like
 // var x = function(...)
 func (f *Function) Call() {}
+
+// Return type, this is only for the interpreter and is not for use normally.
+type Return struct {
+	Value Object
+}
+
+func (r *Return) Type() string {
+	return RETURN
+}
+
+func (r *Return) String() string {
+	return r.Value.String()
+}

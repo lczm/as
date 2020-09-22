@@ -64,6 +64,9 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.PRINT) {
 		return p.printStatement()
 	}
+	if p.match(token.RETURN) {
+		return p.returnStatement()
+	}
 	if p.match(token.FOR) {
 		return p.forStatement()
 	}
@@ -155,6 +158,24 @@ func (p *Parser) printStatement() ast.Statement {
 		Expr: expr,
 	}
 	return printStatement
+}
+
+func (p *Parser) returnStatement() ast.Statement {
+	keyword := p.previous()
+
+	// Default value to nil
+	var value ast.Expression = nil
+
+	if p.peek().Type != token.SEMICOLON {
+		value = p.expression()
+	}
+	p.eat(token.SEMICOLON, "Expect ';' after return statement.")
+
+	returnStatement := &ast.ReturnStatement{
+		Keyword: keyword,
+		Value:   value,
+	}
+	return returnStatement
 }
 
 func (p *Parser) forStatement() ast.Statement {

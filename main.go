@@ -12,11 +12,15 @@ func main() {
 	fmt.Println("as")
 
 	input := `
+
+    var a = 3;
+
     function sum(a, b) {
-        print a + b;
+        return a + b;
     }
 
-    sum(1, 2);
+    a = sum(1, 1);
+    print a;
 `
 
 	fmt.Println("Input : ", input)

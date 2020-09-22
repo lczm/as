@@ -75,6 +75,13 @@ type FunctionStatement struct {
 
 func (fs *FunctionStatement) statement() {}
 
+type ReturnStatement struct {
+	Keyword token.Token
+	Value   Expression
+}
+
+func (rs *ReturnStatement) statement() {}
+
 // Expressions
 type AssignmentExpression struct {
 	Name  token.Token

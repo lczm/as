@@ -249,6 +249,7 @@ func New() *Lexer {
 	keywords["while"] = token.WHILE
 	keywords["for"] = token.FOR
 	keywords["function"] = token.FUNCTION
+	keywords["return"] = token.RETURN
 
 	l := &Lexer{
 		Keywords: keywords,
