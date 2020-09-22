@@ -55,6 +55,10 @@ func (p *Parser) varDeclaration() ast.Statement {
 }
 
 func (p *Parser) statement() ast.Statement {
+	// This is a function declaration, it can be re-used to be parsed for methods as well.
+	if p.match(token.FUNCTION) {
+		return p.functionStatement("function")
+	}
 	if p.match(token.IF) {
 		return p.ifStatement()
 	}
@@ -72,6 +76,51 @@ func (p *Parser) statement() ast.Statement {
 	}
 
 	return p.expressionStatement()
+}
+
+func (p *Parser) functionStatement(functionType string) ast.Statement {
+	name := p.peek()
+	if name.Type != token.IDENTIFIER {
+		panic("Function name is not an identifier")
+	}
+	p.advance()
+
+	// This will store the tokens in a function.
+	// This is a token and not an expr array because
+	// this does not evaluate.
+	// function (a, b, c)
+	var parameters []token.Token
+
+	p.eat(token.LPAREN, "Expect '(' to start off function declaration")
+	for !p.match(token.RPAREN) {
+		parameter := p.peek()
+		if parameter.Type != token.IDENTIFIER {
+			panic("Expect identifiers within a function argument")
+		}
+		parameters = append(parameters, parameter)
+		p.advance()
+		if !p.match(token.COMMA) {
+			break
+		}
+	}
+	p.eat(token.RPAREN, "Expect ')' to end off function declaration")
+
+	// Get the body of the function block statement
+	// function(a, b, c) { }
+	p.eat(token.LBRACE, "Expect '{' to start off the body of a function declaration")
+
+	body := p.blockStatement().(*ast.BlockStatement)
+	// body, ok = body.(*ast.BlockStatement)
+	// if !ok {
+	// 	panic("Body found in function declaration is not a block statement.")
+	// }
+
+	functionStatement := &ast.FunctionStatement{
+		Name:   name,
+		Params: parameters,
+		Body:   *body,
+	}
+	return functionStatement
 }
 
 // this function in the future should also support else if statements.
@@ -407,6 +456,10 @@ func (p *Parser) match(tokens ...token.TokenType) bool {
 
 func (p *Parser) peek() token.Token {
 	return p.tokens[p.current]
+}
+
+func (p *Parser) advance() {
+	p.current++
 }
 
 func (p *Parser) previous() token.Token {

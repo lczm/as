@@ -1,17 +1,26 @@
 package object
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Types
 const (
-	BOOL    = "BOOL"
-	INTEGER = "INTEGER"
+	BOOL     = "BOOL"
+	INTEGER  = "INTEGER"
+	FUNCTION = "FUNCTION"
 )
 
 // All types implement this interface
 type Object interface {
 	Type() string
 	String() string
+}
+
+// All the call-able objects will implement this interface
+// i.e. functions
+type Callable interface {
+	Call() Object
 }
 
 // Boolean type

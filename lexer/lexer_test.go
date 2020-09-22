@@ -60,6 +60,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"else", token.ELSE, "else"},
 		{"while", token.WHILE, "while"},
 		{"for", token.FOR, "for"},
+		{"function", token.FUNCTION, "function"},
 	}
 
 	lexer := New()

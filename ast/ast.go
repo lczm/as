@@ -67,6 +67,14 @@ type BlockStatement struct {
 
 func (bs *BlockStatement) statement() {}
 
+type FunctionStatement struct {
+	Name   token.Token
+	Params []token.Token
+	Body   BlockStatement
+}
+
+func (fs *FunctionStatement) statement() {}
+
 // Expressions
 type AssignmentExpression struct {
 	Name  token.Token

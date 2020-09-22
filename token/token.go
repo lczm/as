@@ -45,12 +45,13 @@ const (
 	IDENTIFIER = "IDENTIFIER"
 
 	// Statements
-	PRINT = "PRINT"
-	VAR   = "VAR"
-	IF    = "IF"
-	ELSE  = "ELSE"
-	WHILE = "WHILE"
-	FOR   = "FOR"
+	PRINT    = "PRINT"
+	VAR      = "VAR"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	WHILE    = "WHILE"
+	FOR      = "FOR"
+	FUNCTION = "FUNCTION"
 
 	// Misc
 	EOF = "EOF"
