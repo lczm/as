@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
@@ -16,30 +17,11 @@ func main() {
     function fib(n) {
         if (n <= 1) {
             return n;
-        } else {
-            return fib(n - 2) + fib(n - 1);
         }
+        return fib(n - 2) + fib(n - 1);
     }
 
-    function sum_two(a, b) {
-        return a + b;
-    }
-
-    function sum_four(a, b, c, d) {
-        if (a + b <= 5) {
-            return sum_two(10, 10);
-        }
-        return sum_two(a + b, c + d);
-    }
-
-    function test_return(a) {
-        if (a <= 5) {
-            return 10;
-        } 
-        return 20;
-    }
-
-    var c = fib(10);
+    var c = fib(20);
     print c;
 `
 
@@ -51,6 +33,9 @@ func main() {
 	parser := parser.New(tokens)
 	expressions := parser.Parse()
 
+	start := time.Now()
 	interpreter := interpreter.New(expressions)
 	interpreter.Start()
+
+	fmt.Println("Time taken : ", time.Since(start))
 }
