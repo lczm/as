@@ -15,10 +15,10 @@ func main() {
 
     function fib(n) {
         if (n <= 1) {
-            print n;
             return n;
+        } else {
+            return fib(n - 2) + fib(n - 1);
         }
-        return fib(n - 2) + fib(n - 1);
     }
 
     function sum_two(a, b) {
@@ -32,8 +32,15 @@ func main() {
         return sum_two(a + b, c + d);
     }
 
-    var a = sum_four(1, 2, 3, 4);
-    print a;
+    function test_return(a) {
+        if (a <= 5) {
+            return 10;
+        } 
+        return 20;
+    }
+
+    var c = fib(10);
+    print c;
 `
 
 	fmt.Println("Input : ", input)

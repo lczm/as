@@ -273,7 +273,13 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 			argument)
 	}
 
-	return i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
+	obj := i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
+	// If the object is a return value
+	returnObj, ok := obj.(*object.Return)
+	if ok {
+		return returnObj.Value
+	}
+	return obj
 }
 
 // ---  Utility functions
@@ -297,7 +303,7 @@ func (i *Interpreter) ExecuteBlockStatements(
 		if ok {
 			// Reset the environment back to the previous one.
 			i.Environment = previousEnvironment
-			return returnObj.Value
+			return returnObj
 		}
 	}
 
