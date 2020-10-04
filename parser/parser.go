@@ -370,7 +370,7 @@ func (p *Parser) multiplication() ast.Expression {
 	expr := p.unary()
 
 	// Match for multiplication
-	for p.match(token.ASTERISK, token.SLASH) {
+	for p.match(token.ASTERISK, token.SLASH, token.MODULUS) {
 		operator := p.previous()
 		right := p.unary()
 		expr = &ast.BinaryExpression{

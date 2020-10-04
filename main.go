@@ -19,10 +19,21 @@ func main() {
             return n;
         }
         return fib(n - 2) + fib(n - 1);
-    }
+	}
 
     var c = fib(20);
-    print c;
+	print c;
+
+    function fizzbuzz(n) {
+        for (var i = 0; i < n; i = i + 1) {
+            if (i % 3 == 0 || i % 5 == 0) {
+                print(i);
+            }
+        }
+    }
+
+    fizzbuzz(10);
+
 `
 
 	fmt.Println("Input : ", input)

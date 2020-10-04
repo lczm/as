@@ -60,6 +60,11 @@ func (l *Lexer) Scan(source string) []token.Token {
 				Type:    token.SLASH,
 				Literal: "/",
 			})
+		case '%':
+			tokens = append(tokens, token.Token{
+				Type:    token.MODULUS,
+				Literal: "%",
+			})
 		// Comparison Operators
 		case '<':
 			if currentIndex < len(source) && source[currentIndex] == '=' {

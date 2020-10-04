@@ -19,6 +19,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"!", token.BANG, "!"},
 		{"*", token.ASTERISK, "*"},
 		{"/", token.SLASH, "/"},
+		{"%", token.MODULUS, "%"},
 
 		// Comparison Operators
 		{"<", token.LT, "<"},

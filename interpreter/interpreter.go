@@ -187,6 +187,13 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 
 			return &object.Integer{Value: leftValue / rightValue}
 		}
+	case token.MODULUS: // Modulus
+		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+			leftValue := left.(*object.Integer).Value
+			rightValue := right.(*object.Integer).Value
+
+			return &object.Integer{Value: leftValue % rightValue}
+		}
 	case token.GT: // Greater than
 		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
