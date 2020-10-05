@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/lczm/as/token"
 )
 
@@ -90,7 +92,8 @@ type AssignmentExpression struct {
 
 func (ae *AssignmentExpression) expression() {}
 func (ae *AssignmentExpression) String() string {
-	return "Assignment Expression"
+	return fmt.Sprintf("(AssignmentExpression) Name : %s, Value : %s\n",
+		ae.Name, ae.Value.String())
 }
 
 type BinaryExpression struct {
@@ -101,7 +104,8 @@ type BinaryExpression struct {
 
 func (be *BinaryExpression) expression() {}
 func (be *BinaryExpression) String() string {
-	return "Binary Expression"
+	return fmt.Sprintf("(BinaryExpression) Left : %s, Right : %s, Operator : %s\n",
+		be.Left.String(), be.Right.String(), be.Operator.Literal)
 }
 
 type UnaryExpression struct {
@@ -111,7 +115,8 @@ type UnaryExpression struct {
 
 func (ue *UnaryExpression) expression() {}
 func (ue *UnaryExpression) String() string {
-	return "Unary Expression"
+	return fmt.Sprintf("(UnaryExpression) Right : %s, Operator : %s\n",
+		ue.Right.String(), ue.Operator.Literal)
 }
 
 type LogicalExpression struct {
@@ -122,7 +127,8 @@ type LogicalExpression struct {
 
 func (le *LogicalExpression) expression() {}
 func (le *LogicalExpression) String() string {
-	return "Logical Expression"
+	return fmt.Sprintf("(LogicalExpression) Left : %s, Right : %s, Operator : %s\n",
+		le.Left.String(), le.Right.String(), le.Operator.Literal)
 }
 
 type NumberExpression struct {
@@ -131,7 +137,8 @@ type NumberExpression struct {
 
 func (ne *NumberExpression) expression() {}
 func (ne *NumberExpression) String() string {
-	return "Number Expression"
+	return fmt.Sprintf("(NumberExpression) Value : %d\n",
+		ne.Value)
 }
 
 type GroupExpression struct {
@@ -140,7 +147,8 @@ type GroupExpression struct {
 
 func (ge *GroupExpression) expression() {}
 func (ge *GroupExpression) String() string {
-	return "Group Expression"
+	return fmt.Sprintf("(GroupExpression) Expr : %s\n",
+		ge.Expr.String())
 }
 
 type VariableExpression struct {
@@ -149,7 +157,8 @@ type VariableExpression struct {
 
 func (ve *VariableExpression) expression() {}
 func (ve *VariableExpression) String() string {
-	return "VariableExpression"
+	return fmt.Sprintf("(VariableExpression) Name : %s\n",
+		ve.Name.Literal)
 }
 
 type CallExpression struct {
@@ -159,5 +168,10 @@ type CallExpression struct {
 
 func (ce *CallExpression) expression() {}
 func (ce *CallExpression) String() string {
-	return "CallExpression"
+	var arguments []string
+	for i := 0; i < len(ce.Arguments); i++ {
+		arguments = append(arguments, ce.Arguments[i].String())
+	}
+	return fmt.Sprintf("(CallExpression) Callee : %s, Arguments : %s\n",
+		ce.Callee.String(), arguments)
 }
