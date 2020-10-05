@@ -59,6 +59,55 @@ func TestIntegerExpressions(t *testing.T) {
 	}
 }
 
+func TestIncrementDecrement(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput int
+	}{
+		{
+			`
+            var output = 10;
+            output++;
+            `,
+			11,
+		},
+		{
+			`
+            var output = 10;
+            output--;
+            `,
+			9,
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		interpreter.Start()
+
+		// Directly hook into the environment to check for output variable.
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+
+			value, err := strconv.Atoi(obj.String())
+			if err != nil {
+				panic(err)
+			}
+
+			if value != test.expectedOutput {
+				t.Fatalf("Test: [%d] - Incorrect value, expected=%d, got=%d",
+					i, test.expectedOutput, value)
+			}
+		}
+	}
+}
+
 func TestTruthy(t *testing.T) {
 	tests := []struct {
 		input          string
@@ -208,6 +257,20 @@ func TestForStatements(t *testing.T) {
 		{
 			`
             for (var output = 10; output != 2; output = output - 1) {
+            }
+            `,
+			"2",
+		},
+		{ // Test the more traditional c-style for loops with i++ iterators
+			`
+            for (var output = 0; output < 10; output++) {
+            }
+            `,
+			"10",
+		},
+		{ // Test the more traditional c-style for loops with i-- iterators
+			`
+            for (var output = 10; output != 2; output--) {
             }
             `,
 			"2",
