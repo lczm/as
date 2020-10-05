@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"io/ioutil"
+	"os"
 
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
@@ -10,40 +10,16 @@ import (
 )
 
 func main() {
-	fmt.Println("as")
+	arguments := os.Args[1:]
 
-	input := `
-
-    function fib(n) {
-        if (n <= 1) {
-            return n;
-        }
-        return fib(n - 2) + fib(n - 1);
+	if len(arguments) > 1 {
+		os.Exit(1)
 	}
 
-    var c = fib(20);
-	print c;
+	name := arguments[0]
+	data, _ := ioutil.ReadFile(name)
 
-    function fizzbuzz(n) {
-        for (var i = 0; i < n; i = i + 1) {
-            if (i % 3 == 0 || i % 5 == 0) {
-                print(i);
-            }
-        }
-    }
-
-    fizzbuzz(10);
-
-    var a = 10;
-    a++;
-    print a;
-
-    for (var i = 0; i < 10; i++) {
-        print i;
-    }
-`
-
-	fmt.Println("Input : ", input)
+	input := string(data)
 
 	lexer := lexer.New()
 	tokens := lexer.Scan(input)
@@ -51,9 +27,6 @@ func main() {
 	parser := parser.New(tokens)
 	expressions := parser.Parse()
 
-	start := time.Now()
 	interpreter := interpreter.New(expressions)
 	interpreter.Start()
-
-	fmt.Println("Time taken : ", time.Since(start))
 }
