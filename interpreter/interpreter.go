@@ -60,6 +60,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	case *ast.NumberExpression:
 		numberValue := int64(node.Value)
 		return &object.Integer{Value: numberValue}
+	case *ast.StringExpression:
+		return &object.String{Value: node.Value}
 	case *ast.GroupExpression:
 		return i.Eval(node.Expr)
 	case *ast.CallExpression:

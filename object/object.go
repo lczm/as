@@ -12,6 +12,7 @@ const (
 	INTEGER  = "INTEGER"
 	FUNCTION = "FUNCTION"
 	RETURN   = "RETURN"
+	STRING   = "STRING"
 )
 
 // All types implement this interface
@@ -53,6 +54,19 @@ func (i *Integer) Type() string {
 
 func (i *Integer) String() string {
 	return fmt.Sprintf("%d", i.Value)
+}
+
+// String type
+type String struct {
+	Value string
+}
+
+func (s *String) Type() string {
+	return STRING
+}
+
+func (s *String) String() string {
+	return s.Value
 }
 
 // Function type, it is an Object as well as a Callable

@@ -479,6 +479,13 @@ func (p *Parser) primary() ast.Expression {
 		}
 	}
 
+	if p.match(token.STRING) {
+		value := p.previous().Literal
+		return &ast.StringExpression{
+			Value: value,
+		}
+	}
+
 	if p.match(token.IDENTIFIER) {
 		return &ast.VariableExpression{
 			Name: p.previous(),

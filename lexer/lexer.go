@@ -190,6 +190,19 @@ func (l *Lexer) Scan(source string) []token.Token {
 				Type:    token.RBRACKET,
 				Literal: "]",
 			})
+		case '"':
+			extendedIndex := currentIndex
+			for extendedIndex < len(source) && source[extendedIndex] != '"' {
+				extendedIndex++
+			}
+
+			stringValue := source[currentIndex:extendedIndex]
+			currentIndex = extendedIndex + 1
+
+			tokens = append(tokens, token.Token{
+				Type:    token.STRING,
+				Literal: stringValue,
+			})
 		default:
 			if l.isDigit(ch) { // Handle numeric case
 				extendedIndex := currentIndex

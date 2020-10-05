@@ -141,6 +141,16 @@ func (ne *NumberExpression) String() string {
 		ne.Value)
 }
 
+type StringExpression struct {
+	Value string
+}
+
+func (se *StringExpression) expression() {}
+func (se *StringExpression) String() string {
+	return fmt.Sprintf("(StringExpression) Value : %s\n",
+		se.Value)
+}
+
 type GroupExpression struct {
 	Expr Expression
 }

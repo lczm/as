@@ -41,12 +41,17 @@ const (
 	LBRACKET  = "["
 	RBRACKET  = "]"
 
+	// Quotes, usually for strings
+	SINGLE_QUOTE = "'"
+	DOUBLE_QUOTE = "\""
+
 	// Increment / Decrement
 	INCREMENT = "++"
 	DECREMENT = "--"
 
 	// Numeric values and identifiers
 	NUMBER     = "NUMBER"
+	STRING     = "STRING"
 	IDENTIFIER = "IDENTIFIER"
 
 	// Statements
