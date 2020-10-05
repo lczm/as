@@ -34,6 +34,13 @@ func main() {
 
     fizzbuzz(10);
 
+    var a = 10;
+    a++;
+    print a;
+
+    for (var i = 0; i < 10; i++) {
+        print i;
+    }
 `
 
 	fmt.Println("Input : ", input)
