@@ -41,6 +41,10 @@ const (
 	LBRACKET  = "["
 	RBRACKET  = "]"
 
+	// Increment / Decrement
+	INCREMENT = "++"
+	DECREMENT = "--"
+
 	// Numeric values and identifiers
 	NUMBER     = "NUMBER"
 	IDENTIFIER = "IDENTIFIER"

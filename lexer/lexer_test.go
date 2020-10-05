@@ -40,6 +40,10 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"[", token.LBRACKET, "["},
 		{"]", token.RBRACKET, "]"},
 
+		// Increment / Decrement
+		{"++", token.INCREMENT, "++"},
+		{"--", token.DECREMENT, "--"},
+
 		// Numbers
 		{"1", token.NUMBER, "1"},
 		{"12", token.NUMBER, "12"},
@@ -172,6 +176,16 @@ func TestMultipleTokenScan(t *testing.T) {
 			[]token.TokenType{token.WHILE, token.LPAREN, token.IDENTIFIER, token.LT, token.NUMBER,
 				token.RPAREN, token.LBRACE, token.RBRACE, token.SEMICOLON},
 			[]string{"while", "(", "a", "<", "5", ")", "{", "}", ";"},
+		},
+		{ // Identifier with increment
+			`a++;`,
+			[]token.TokenType{token.IDENTIFIER, token.INCREMENT, token.SEMICOLON},
+			[]string{"a", "++", ";"},
+		},
+		{ // Identifier with decrement
+			`a--;`,
+			[]token.TokenType{token.IDENTIFIER, token.DECREMENT, token.SEMICOLON},
+			[]string{"a", "--", ";"},
 		},
 	}
 

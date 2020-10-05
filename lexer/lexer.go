@@ -27,15 +27,32 @@ func (l *Lexer) Scan(source string) []token.Token {
 			break
 		// Operators
 		case '+':
-			tokens = append(tokens, token.Token{
-				Type:    token.PLUS,
-				Literal: "+",
-			})
+			// Handle the case of '++'
+			if currentIndex < len(source) && source[currentIndex] == '+' {
+				tokens = append(tokens, token.Token{
+					Type:    token.INCREMENT,
+					Literal: "++",
+				})
+				currentIndex++
+			} else {
+				tokens = append(tokens, token.Token{
+					Type:    token.PLUS,
+					Literal: "+",
+				})
+			}
 		case '-':
-			tokens = append(tokens, token.Token{
-				Type:    token.MINUS,
-				Literal: "-",
-			})
+			if currentIndex < len(source) && source[currentIndex] == '-' {
+				tokens = append(tokens, token.Token{
+					Type:    token.DECREMENT,
+					Literal: "--",
+				})
+				currentIndex++
+			} else {
+				tokens = append(tokens, token.Token{
+					Type:    token.MINUS,
+					Literal: "-",
+				})
+			}
 		case '!':
 			// Handle the case of '!='
 			if currentIndex < len(source) && source[currentIndex] == '=' {
