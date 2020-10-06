@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/lczm/as/ast"
+	"github.com/lczm/as/builtin"
 	"github.com/lczm/as/environment"
 	"github.com/lczm/as/object"
 	"github.com/lczm/as/token"
@@ -266,29 +267,37 @@ func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.
 }
 
 func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object {
-	function, ok := i.Eval(expr.Callee).(*object.Function)
-	if !ok {
-		panic("Call expression callee is not a declared function")
-	}
+	switch function := i.Eval(expr.Callee).(type) {
+	case *object.Function:
+		fmt.Println("Hit normalFunction")
+		// function, ok := i.Eval(expr.Callee).(*object.Function)
+		// if !ok {
+		// 	panic("Call expression callee is not a declared function")
+		// }
 
-	var evaluatedArguments []object.Object
-	for _, argument := range expr.Arguments {
-		evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
-	}
+		var evaluatedArguments []object.Object
+		for _, argument := range expr.Arguments {
+			evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
+		}
 
-	environment := environment.NewChildEnvironment(i.Environment)
-	for i, argument := range evaluatedArguments {
-		environment.Define(function.FunctionStatement.Params[i].Literal,
-			argument)
-	}
+		environment := environment.NewChildEnvironment(i.Environment)
+		for i, argument := range evaluatedArguments {
+			environment.Define(function.FunctionStatement.Params[i].Literal,
+				argument)
+		}
 
-	obj := i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
-	// If the object is a return value
-	returnObj, ok := obj.(*object.Return)
-	if ok {
-		return returnObj.Value
+		obj := i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
+		// If the object is a return value
+		returnObj, ok := obj.(*object.Return)
+		if ok {
+			return returnObj.Value
+		}
+		return obj
+	case *object.BuiltinFunction:
+		fmt.Println("Hit builtinFunction")
+		function.Fn()
 	}
-	return obj
+	return nil
 }
 
 // ---  Utility functions
@@ -340,6 +349,7 @@ func (i *Interpreter) IsTruthy(obj object.Object) bool {
 
 func New(statements []ast.Statement) *Interpreter {
 	environment := environment.New()
+	environment.Define("type", builtin.TypeFunc())
 
 	i := &Interpreter{
 		Statements:  statements,

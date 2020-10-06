@@ -13,6 +13,7 @@ const (
 	FUNCTION = "FUNCTION"
 	RETURN   = "RETURN"
 	STRING   = "STRING"
+	BUILTIN  = "BULITIN" // builtin functions from the host language
 )
 
 // All types implement this interface
@@ -80,6 +81,19 @@ func (f *Function) Type() string {
 
 func (f *Function) String() string {
 	return fmt.Sprintf("Function : <%s>", f.FunctionStatement.Name.Literal)
+}
+
+type BuiltinFunction struct {
+	Name string
+	Fn   func(args ...Object) Object
+}
+
+func (bf *BuiltinFunction) Type() string {
+	return BUILTIN
+}
+
+func (bf *BuiltinFunction) String() string {
+	return fmt.Sprintf("BulitinFunction: <%s>", bf.Name)
 }
 
 // The call functions should return an object
