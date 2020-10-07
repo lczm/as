@@ -93,6 +93,11 @@ func (p *Parser) functionStatement(functionType string) ast.Statement {
 	// function (a, b, c)
 	var parameters []token.Token
 
+	// TODO : This can probably be more simplified?
+	// This same style is used in p.call() as well, if this is changed,
+	// make sure to change that together
+	emptyParameter := true
+
 	p.eat(token.LPAREN, "Expect '(' to start off function declaration")
 	for !p.match(token.RPAREN) {
 		parameter := p.peek()
@@ -102,9 +107,15 @@ func (p *Parser) functionStatement(functionType string) ast.Statement {
 		parameters = append(parameters, parameter)
 		p.advance()
 		if !p.match(token.COMMA) {
+			emptyParameter = false
 			break
 		}
 	}
+
+	if emptyParameter {
+		p.current--
+	}
+
 	p.eat(token.RPAREN, "Expect ')' to end off function declaration")
 
 	// Get the body of the function block statement
@@ -441,14 +452,21 @@ func (p *Parser) call() ast.Expression {
 		// If it is a left paren : '(<argument>, <argument>)
 		if p.match(token.LPAREN) {
 			var arguments []ast.Expression
+			emptyParameter := true
+
 			// While it is not a right paren to end off the function
 			for !p.match(token.RPAREN) {
 				// Add an argument as it is not empty
 				arguments = append(arguments, p.expression())
 				// If it does not match a comma, break out of this.
 				if !p.match(token.COMMA) {
+					emptyParameter = false
 					break
 				}
+			}
+
+			if emptyParameter {
+				p.current--
 			}
 
 			// Here is where the parser can check for other calls that may

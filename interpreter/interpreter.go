@@ -306,8 +306,9 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 			return returnObj.Value
 		}
 		return obj
+	default:
+		return nil
 	}
-	return nil
 }
 
 // ---  Utility functions
