@@ -9,7 +9,7 @@ import (
 	"github.com/lczm/as/parser"
 )
 
-func TestLenFunction(t *testing.T) {
+func TestLenFunc(t *testing.T) {
 	tests := []struct {
 		input          string
 		expectedOutput int

@@ -17,8 +17,7 @@ func TypeFunc() object.Object {
 			}
 
 			obj := args[0]
-			fmt.Println(obj.Type())
-			return nil
+			return &object.String{Value: obj.Type()}
 		},
 	}
 	return function
