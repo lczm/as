@@ -359,7 +359,9 @@ func (i *Interpreter) IsTruthy(obj object.Object) bool {
 
 func New(statements []ast.Statement) *Interpreter {
 	environment := environment.New()
-	environment.Define("type", builtin.TypeFunc())
+
+	// Populate the environment with all the built in functions
+	builtin.PopulateEnvironment(environment)
 
 	i := &Interpreter{
 		Statements:  statements,
