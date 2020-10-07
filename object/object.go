@@ -50,7 +50,7 @@ type Integer struct {
 }
 
 func (i *Integer) Type() string {
-	return INTEGER
+	return fmt.Sprintf("<type: %s>", INTEGER)
 }
 
 func (i *Integer) String() string {
@@ -63,7 +63,7 @@ type String struct {
 }
 
 func (s *String) Type() string {
-	return STRING
+	return fmt.Sprintf("<type: %s>", STRING)
 }
 
 func (s *String) String() string {
@@ -76,7 +76,7 @@ type Function struct {
 }
 
 func (f *Function) Type() string {
-	return FUNCTION
+	return fmt.Sprintf("<type: %s>", STRING)
 }
 
 func (f *Function) String() string {
@@ -89,7 +89,7 @@ type BuiltinFunction struct {
 }
 
 func (bf *BuiltinFunction) Type() string {
-	return BUILTIN
+	return fmt.Sprintf("<type: %s>", BUILTIN)
 }
 
 func (bf *BuiltinFunction) String() string {

@@ -269,7 +269,6 @@ func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.
 func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object {
 	switch function := i.Eval(expr.Callee).(type) {
 	case *object.Function:
-		fmt.Println("Hit normalFunction")
 		// function, ok := i.Eval(expr.Callee).(*object.Function)
 		// if !ok {
 		// 	panic("Call expression callee is not a declared function")
@@ -294,8 +293,19 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		}
 		return obj
 	case *object.BuiltinFunction:
-		fmt.Println("Hit builtinFunction")
-		function.Fn()
+		var evaluatedArguments []object.Object
+		for _, argument := range expr.Arguments {
+			evaluatedArguments = append(evaluatedArguments, i.Eval(argument))
+		}
+
+		// Pass the array as a variadic argument
+		obj := function.Fn(evaluatedArguments...)
+		// If the object is a return value
+		returnObj, ok := obj.(*object.Return)
+		if ok {
+			return returnObj.Value
+		}
+		return obj
 	}
 	return nil
 }

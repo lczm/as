@@ -11,7 +11,13 @@ func TypeFunc() object.Object {
 	function := &object.BuiltinFunction{
 		Name: "type",
 		Fn: func(args ...object.Object) object.Object {
-			fmt.Println("Hello from typefunc")
+			if len(args) != 1 {
+				// TODO : Error out
+				fmt.Println("type() can only take in one parameter at a time.")
+			}
+
+			obj := args[0]
+			fmt.Println(obj.Type())
 			return nil
 		},
 	}
