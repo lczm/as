@@ -277,7 +277,6 @@ func (l *Lexer) isKeyword(s string) bool {
 
 func New() *Lexer {
 	keywords := make(map[string]token.TokenType)
-	keywords["print"] = token.PRINT
 	keywords["var"] = token.VAR
 	keywords["if"] = token.IF
 	keywords["else"] = token.ELSE

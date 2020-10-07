@@ -1,8 +1,6 @@
 package interpreter
 
 import (
-	"fmt"
-
 	"github.com/lczm/as/ast"
 	"github.com/lczm/as/builtin"
 	"github.com/lczm/as/environment"
@@ -42,8 +40,6 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalBlockStatement(node)
 	case *ast.FunctionStatement:
 		i.evalFunctionStatement(node)
-	case *ast.PrintStatement:
-		return i.evalPrintStatement(node)
 	case *ast.ReturnStatement:
 		return i.evalReturnStatement(node)
 	case *ast.VariableStatement:
@@ -114,17 +110,6 @@ func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
 		FunctionStatement: *stmt,
 	}
 	i.Environment.Define(stmt.Name.Literal, functionObject)
-}
-
-func (i *Interpreter) evalPrintStatement(stmt *ast.PrintStatement) object.Object {
-	// This is also a default value for returning values from a print statement.
-	// Which allows for code such as `var a = print(3);` to work
-
-	objectValue := i.Eval(stmt.Expr)
-	str := objectValue.String()
-
-	fmt.Println(str)
-	return nil
 }
 
 func (i *Interpreter) evalReturnStatement(stmt *ast.ReturnStatement) object.Object {

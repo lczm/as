@@ -61,9 +61,6 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.IF) {
 		return p.ifStatement()
 	}
-	if p.match(token.PRINT) {
-		return p.printStatement()
-	}
 	if p.match(token.RETURN) {
 		return p.returnStatement()
 	}
@@ -158,17 +155,6 @@ func (p *Parser) ifStatement() ast.Statement {
 	}
 
 	return ifStatement
-}
-
-func (p *Parser) printStatement() ast.Statement {
-	expr := p.expression()
-
-	p.eat(token.SEMICOLON, "Expect ';'")
-
-	printStatement := &ast.PrintStatement{
-		Expr: expr,
-	}
-	return printStatement
 }
 
 func (p *Parser) returnStatement() ast.Statement {

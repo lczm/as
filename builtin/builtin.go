@@ -48,7 +48,21 @@ func LenFunc() object.Object {
 	return function
 }
 
+func PrintFunc() object.Object {
+	function := &object.BuiltinFunction{
+		Name: "print",
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.String())
+			}
+			return nil
+		},
+	}
+	return function
+}
+
 func PopulateEnvironment(env *environment.Environment) {
 	env.Define("type", TypeFunc())
 	env.Define("len", LenFunc())
+	env.Define("print", PrintFunc())
 }
