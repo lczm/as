@@ -165,70 +165,70 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 
 	switch expr.Operator.Type {
 	case token.PLUS: // Add
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: leftValue + rightValue}
 		}
 	case token.MINUS: // Subtract
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: leftValue - rightValue}
 		}
 	case token.ASTERISK: // Multiply
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 
 			return &object.Integer{Value: leftValue * rightValue}
 		}
 	case token.SLASH: // Divide
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 
 			return &object.Integer{Value: leftValue / rightValue}
 		}
 	case token.MODULUS: // Modulus
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 
 			return &object.Integer{Value: leftValue % rightValue}
 		}
 	case token.GT: // Greater than
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue > rightValue}
 		}
 	case token.GT_EQ: // Greater equal than
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue >= rightValue}
 		}
 	case token.LT: // Lesser than
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue < rightValue}
 		}
 	case token.LT_EQ: // Lesser equal than
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue <= rightValue}
 		}
 	case token.EQ: // Equals '=='
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue == rightValue}
 		}
 	case token.NOT_EQ: // Not equals '!='
-		if left.Type() == object.INTEGER && right.Type() == object.INTEGER {
+		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue != rightValue}
@@ -244,7 +244,7 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 	switch expr.Operator.Type {
 	case token.MINUS:
 		// Inverse the value
-		if right.Type() == object.INTEGER {
+		if right.RawType() == object.INTEGER {
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: -rightValue}
 		}
@@ -342,11 +342,11 @@ func (i *Interpreter) ExecuteBlockStatements(
 // This is where it is important to define what is truthy and what is not.
 func (i *Interpreter) IsTruthy(obj object.Object) bool {
 	// Check for booleans
-	if obj.Type() == object.BOOL {
+	if obj.RawType() == object.BOOL {
 		return obj.(*object.Bool).Value
 	}
 
-	if obj.Type() == object.INTEGER {
+	if obj.RawType() == object.INTEGER {
 		// If the value of the object is 0, it is falsey
 		if obj.(*object.Integer).Value == 0 {
 			return false

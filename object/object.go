@@ -18,6 +18,7 @@ const (
 
 // All types implement this interface
 type Object interface {
+	RawType() string
 	Type() string
 	String() string
 }
@@ -33,8 +34,12 @@ type Bool struct {
 	Value bool
 }
 
-func (b *Bool) Type() string {
+func (b *Bool) RawType() string {
 	return BOOL
+}
+
+func (b *Bool) Type() string {
+	return fmt.Sprintf("<type: %s>", BOOL)
 }
 
 func (b *Bool) String() string {
@@ -47,6 +52,10 @@ func (b *Bool) String() string {
 // Integer type
 type Integer struct {
 	Value int64
+}
+
+func (i *Integer) RawType() string {
+	return INTEGER
 }
 
 func (i *Integer) Type() string {
@@ -62,6 +71,10 @@ type String struct {
 	Value string
 }
 
+func (s *String) RawType() string {
+	return STRING
+}
+
 func (s *String) Type() string {
 	return fmt.Sprintf("<type: %s>", STRING)
 }
@@ -75,8 +88,12 @@ type Function struct {
 	FunctionStatement ast.FunctionStatement
 }
 
+func (f *Function) RawType() string {
+	return FUNCTION
+}
+
 func (f *Function) Type() string {
-	return fmt.Sprintf("<type: %s>", STRING)
+	return fmt.Sprintf("<type: %s>", FUNCTION)
 }
 
 func (f *Function) String() string {
@@ -86,6 +103,10 @@ func (f *Function) String() string {
 type BuiltinFunction struct {
 	Name string
 	Fn   func(args ...Object) Object
+}
+
+func (bf *BuiltinFunction) RawType() string {
+	return BUILTIN
 }
 
 func (bf *BuiltinFunction) Type() string {
@@ -106,8 +127,12 @@ type Return struct {
 	Value Object
 }
 
-func (r *Return) Type() string {
+func (r *Return) RawType() string {
 	return RETURN
+}
+
+func (r *Return) Type() string {
+	return fmt.Sprintf("Return: <%s>", RETURN)
 }
 
 func (r *Return) String() string {
