@@ -57,6 +57,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	case *ast.NumberExpression:
 		numberValue := int64(node.Value)
 		return &object.Integer{Value: numberValue}
+	case *ast.ListExpression:
+		return i.evalListExpression(node)
 	case *ast.StringExpression:
 		return &object.String{Value: node.Value}
 	case *ast.GroupExpression:
@@ -248,6 +250,16 @@ func (i *Interpreter) evalLogicalExpression(expr *ast.LogicalExpression) object.
 		}
 	} else {
 		panic("LogicalExpression has a operator that is not supported")
+	}
+}
+
+func (i *Interpreter) evalListExpression(expr *ast.ListExpression) object.Object {
+	var evaluatedExpressions []object.Object
+	for _, expression := range expr.Values {
+		evaluatedExpressions = append(evaluatedExpressions, i.Eval(expression))
+	}
+	return &object.List{
+		Value: evaluatedExpressions,
 	}
 }
 

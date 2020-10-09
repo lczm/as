@@ -14,6 +14,8 @@ const (
 	RETURN   = "RETURN"
 	STRING   = "STRING"
 	BUILTIN  = "BULITIN" // builtin functions from the host language
+	LIST     = "LIST"
+	HASHMAP  = "HASHMAP"
 )
 
 // All types implement this interface
@@ -137,4 +139,27 @@ func (r *Return) Type() string {
 
 func (r *Return) String() string {
 	return r.Value.String()
+}
+
+// Container types - Lists/Hashmaps
+type List struct {
+	Value []Object
+}
+
+func (l *List) RawType() string {
+	return LIST
+}
+
+func (l *List) Type() string {
+	return fmt.Sprintf("List: <%s>", LIST)
+}
+
+func (l *List) String() string {
+	var valueStrings []string
+	for i := 0; i < len(l.Value); i++ {
+		valueStrings = append(valueStrings, l.Value[i].String())
+	}
+	// Sprintf can automatically convert an array of strings into
+	// a string for the output.
+	return fmt.Sprintf("%s\n", valueStrings)
 }

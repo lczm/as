@@ -504,6 +504,33 @@ func (p *Parser) primary() ast.Expression {
 			Expr: expr,
 		}
 	}
+
+	// List declaration
+	if p.match(token.LBRACKET) {
+		var expressions []ast.Expression
+		emptyList := true
+
+		for !p.match(token.RBRACKET) {
+			expressions = append(expressions, p.expression())
+			if !p.match(token.COMMA) {
+				emptyList = false
+				break
+			}
+		}
+
+		// Move back one as p.match() will automatically
+		// move the cursor ahead by one token
+		if emptyList {
+			p.current--
+		}
+
+		p.eat(token.RBRACKET, "Expect ']' after '[' (Start of list)")
+
+		return &ast.ListExpression{
+			Values: expressions,
+		}
+	}
+
 	return nil
 }
 

@@ -141,6 +141,19 @@ func (ne *NumberExpression) String() string {
 		ne.Value)
 }
 
+type ListExpression struct {
+	Values []Expression
+}
+
+func (le *ListExpression) expression() {}
+func (le *ListExpression) String() string {
+	var stringValues []string
+	for i := 0; i < len(le.Values); i++ {
+		stringValues = append(stringValues, le.Values[i].String())
+	}
+	return fmt.Sprintf("(ListExpression) Values : %s", le.String())
+}
+
 type StringExpression struct {
 	Value string
 }
