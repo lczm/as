@@ -49,6 +49,10 @@ const (
 	INCREMENT = "++"
 	DECREMENT = "--"
 
+	// Booleans
+	TRUE  = "TRUE"
+	FALSE = "FALSE"
+
 	// Numeric values and identifiers
 	NUMBER     = "NUMBER"
 	STRING     = "STRING"

@@ -164,6 +164,16 @@ func (se *StringExpression) String() string {
 		se.Value)
 }
 
+type BoolExpression struct {
+	Value bool
+}
+
+func (be *BoolExpression) expression() {}
+func (be *BoolExpression) String() string {
+	return fmt.Sprintf("(BooleanExpression) Value : %t\n",
+		be.Value)
+}
+
 type GroupExpression struct {
 	Expr Expression
 }

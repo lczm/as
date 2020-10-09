@@ -511,6 +511,20 @@ func (p *Parser) primary() ast.Expression {
 		}
 	}
 
+	// True booleans
+	if p.match(token.TRUE) {
+		return &ast.BoolExpression{
+			Value: true,
+		}
+	}
+
+	// False booleans
+	if p.match(token.FALSE) {
+		return &ast.BoolExpression{
+			Value: false,
+		}
+	}
+
 	if p.match(token.LPAREN) {
 		expr := p.expression()
 

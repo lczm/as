@@ -61,6 +61,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalListExpression(node)
 	case *ast.StringExpression:
 		return &object.String{Value: node.Value}
+	case *ast.BoolExpression:
+		return &object.Bool{Value: node.Value}
 	case *ast.GroupExpression:
 		return i.Eval(node.Expr)
 	case *ast.CallExpression:

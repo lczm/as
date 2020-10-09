@@ -284,6 +284,8 @@ func New() *Lexer {
 	keywords["for"] = token.FOR
 	keywords["function"] = token.FUNCTION
 	keywords["return"] = token.RETURN
+	keywords["true"] = token.TRUE
+	keywords["false"] = token.FALSE
 
 	l := &Lexer{
 		Keywords: keywords,
