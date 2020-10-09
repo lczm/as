@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/lczm/as/ast"
+	"github.com/lczm/as/errors"
 	"github.com/lczm/as/token"
 )
 
@@ -603,7 +604,8 @@ func (p *Parser) eat(tokenType token.TokenType, message string) {
 	}
 
 	// TODO : Throw an error with the message that is passed in
-	panic(message)
+	// panic(message)
+	errors.SyntaxError(tokenType, message)
 }
 
 func New(tokens []token.Token) *Parser {
