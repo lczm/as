@@ -30,6 +30,7 @@ func LenFunc() object.Object {
 			// TODO : Error out, len() can only take in one parameter
 			if len(args) != 1 {
 				fmt.Println("len() needs at least one parameter.")
+				return nil
 			}
 
 			obj := args[0]
@@ -63,8 +64,37 @@ func PrintFunc() object.Object {
 	return function
 }
 
+// This is to piggy-back off the golang 'append' function
+// Mostly as a way to add more elements to a list.
+// In the future if classes are implemented
+// maybe lists can be a natively implemented class such that
+// .append() or .remove() would work seamlessly.
+func AppendFunc() object.Object {
+	function := &object.BuiltinFunction{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				fmt.Println("append() takes in two parameters, the appendee and the element.")
+				return nil
+			}
+
+			// TODO : Support more than just lists, possibly hashmaps
+			// Extract the list value out of the list object
+			list := args[0].(*object.List).Value
+			element := args[1]
+
+			// Add the list item
+			list = append(list, element)
+
+			// Wrap it back into an object
+			return &object.List{Value: list}
+		},
+	}
+	return function
+}
+
 func PopulateEnvironment(env *environment.Environment) {
 	env.Define("type", TypeFunc())
 	env.Define("len", LenFunc())
 	env.Define("print", PrintFunc())
+	env.Define("append", AppendFunc())
 }
