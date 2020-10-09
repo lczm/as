@@ -465,6 +465,21 @@ func (p *Parser) call() ast.Expression {
 				Callee:    expr,
 				Arguments: arguments,
 			}
+		} else if p.match(token.LBRACKET) { // If it is a '[' : used for indexing
+			// The value inside the '['(value)']' can be a function or anything
+			// so this should be parsed with an expression
+			index := p.expression()
+
+			// This is an 'argument' for the ast call expression
+			// But this really just holds the index to the callee
+			// and we also know that this is only a single expression
+			arguments := []ast.Expression{index}
+
+			p.eat(token.RBRACKET, "Expect ']' after '[' index expression")
+			expr = &ast.CallExpression{
+				Callee:    expr,
+				Arguments: arguments,
+			}
 		} else {
 			break
 		}

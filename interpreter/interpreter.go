@@ -264,7 +264,10 @@ func (i *Interpreter) evalListExpression(expr *ast.ListExpression) object.Object
 }
 
 func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object {
-	switch function := i.Eval(expr.Callee).(type) {
+	switch callee := i.Eval(expr.Callee).(type) {
+	// If it is a function that the user has defined somewhere,
+	// evaluate the arguments in the environment and pass the
+	// arguments over to the function
 	case *object.Function:
 		// function, ok := i.Eval(expr.Callee).(*object.Function)
 		// if !ok {
@@ -278,17 +281,19 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 
 		environment := environment.NewChildEnvironment(i.Environment)
 		for i, argument := range evaluatedArguments {
-			environment.Define(function.FunctionStatement.Params[i].Literal,
+			environment.Define(callee.FunctionStatement.Params[i].Literal,
 				argument)
 		}
 
-		obj := i.ExecuteBlockStatements(function.FunctionStatement.Body.Statements, environment)
+		obj := i.ExecuteBlockStatements(callee.FunctionStatement.Body.Statements, environment)
 		// If the object is a return value
 		returnObj, ok := obj.(*object.Return)
 		if ok {
 			return returnObj.Value
 		}
 		return obj
+		// If it is a builtin function that is being called, evaluate the arguments
+		// and pass it to the built in function
 	case *object.BuiltinFunction:
 		var evaluatedArguments []object.Object
 		for _, argument := range expr.Arguments {
@@ -296,12 +301,27 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		}
 
 		// Pass the array as a variadic argument
-		obj := function.Fn(evaluatedArguments...)
+		obj := callee.Fn(evaluatedArguments...)
 		// If the object is a return value
 		returnObj, ok := obj.(*object.Return)
 		if ok {
 			return returnObj.Value
 		}
+		return obj
+	// If the callee is a list, then the following is what is parsed
+	// (List)[1]
+	// Where the '1' is now the argument to the 'callee'
+	case *object.List:
+		// Can do this as we know that it will only parse a single expression
+		evaluatedIndex := i.Eval(expr.Arguments[0])
+
+		intIndex, ok := evaluatedIndex.(*object.Integer)
+		if !ok {
+			// TODO Proper error message
+			panic("Indexed operation on a list expression is not an integer")
+		}
+
+		obj := callee.Value[intIndex.Value]
 		return obj
 	default:
 		return nil
