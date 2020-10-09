@@ -39,6 +39,8 @@ func LenFunc() object.Object {
 				fmt.Println("len() cannot be used on an integer.")
 			case *object.String:
 				return &object.Integer{Value: int64(len(obj.String()))}
+			case *object.List:
+				return &object.Integer{Value: int64(len(obj.Value))}
 			default:
 				return nil
 			}
