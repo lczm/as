@@ -323,6 +323,18 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 
 		obj := callee.Value[intIndex.Value]
 		return obj
+	case *object.String:
+		// Same as above, on the list, by the time it reaches here,
+		// it is known that there is only one expression
+		evaluatedIndex := i.Eval(expr.Arguments[0])
+
+		intIndex, ok := evaluatedIndex.(*object.Integer)
+		if !ok {
+			// TODO Proper error message
+			panic("Indexed operation on a list expression is not an integer")
+		}
+
+		return &object.String{Value: string(callee.Value[intIndex.Value])}
 	default:
 		return nil
 	}
