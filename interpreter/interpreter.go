@@ -237,6 +237,13 @@ func (i *Interpreter) evalUnaryExpression(expr *ast.UnaryExpression) object.Obje
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: -rightValue}
 		}
+	case token.BANG:
+		// If evaluated condition is true, inverse the result
+		if i.IsTruthy(right) {
+			return &object.Bool{Value: false}
+		}
+		// If it is not true, inverse the result here
+		return &object.Bool{Value: true}
 	}
 	return nil
 }
