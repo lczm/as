@@ -1,6 +1,6 @@
 # As
 
-This is a toy programming language mostly for fun. The repository contains an interpreter to run 'as' code.
+This is a toy programming language mostly built for fun. The repository contains an interpreter to run 'as' code.
 
 ## Build
 ```bash
