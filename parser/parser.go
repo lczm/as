@@ -283,6 +283,45 @@ func (p *Parser) assignment() ast.Expression {
 		// Error out here.
 		panic(assignment)
 	}
+
+	// i++; i--;
+	// Match for increment / decrement
+	for p.match(token.INCREMENT, token.DECREMENT) {
+		var binaryExpr *ast.BinaryExpression
+		// Check that when it is incrementing, binaryExpr should be plus
+		// Make sure to use previous to check as match increments it
+		if p.previous().Type == token.INCREMENT {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: &ast.NumberExpression{Value: 1},
+				Operator: token.Token{
+					Type:    token.PLUS,
+					Literal: "+",
+				},
+			}
+		} else if p.previous().Type == token.DECREMENT {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: &ast.NumberExpression{Value: 1},
+				Operator: token.Token{
+					Type:    token.MINUS,
+					Literal: "-",
+				},
+			}
+		}
+
+		// Can check if it casted properly
+		variableExpr := expr.(*ast.VariableExpression)
+
+		// Return an assignment expression
+		// syntax sugar converting i++ into i = i + 1
+		// likewise for i-- into i = i - 1
+		expr = &ast.AssignmentExpression{
+			Name:  variableExpr.Name,
+			Value: binaryExpr,
+		}
+	}
+
 	return expr
 }
 
@@ -360,44 +399,6 @@ func (p *Parser) addition() ast.Expression {
 			Left:     expr,
 			Right:    right,
 			Operator: operator,
-		}
-	}
-
-	// i++; i--;
-	// Match for increment / decrement
-	for p.match(token.INCREMENT, token.DECREMENT) {
-		var binaryExpr *ast.BinaryExpression
-		// Check that when it is incrementing, binaryExpr should be plus
-		// Make sure to use previous to check as match increments it
-		if p.previous().Type == token.INCREMENT {
-			binaryExpr = &ast.BinaryExpression{
-				Left:  expr,
-				Right: &ast.NumberExpression{Value: 1},
-				Operator: token.Token{
-					Type:    token.PLUS,
-					Literal: "+",
-				},
-			}
-		} else if p.previous().Type == token.DECREMENT {
-			binaryExpr = &ast.BinaryExpression{
-				Left:  expr,
-				Right: &ast.NumberExpression{Value: 1},
-				Operator: token.Token{
-					Type:    token.MINUS,
-					Literal: "-",
-				},
-			}
-		}
-
-		// Can check if it casted properly
-		variableExpr := expr.(*ast.VariableExpression)
-
-		// Return an assignment expression
-		// syntax sugar converting i++ into i = i + 1
-		// likewise for i-- into i = i - 1
-		expr = &ast.AssignmentExpression{
-			Name:  variableExpr.Name,
-			Value: binaryExpr,
 		}
 	}
 
