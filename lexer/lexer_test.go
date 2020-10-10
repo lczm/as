@@ -21,6 +21,13 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"/", token.SLASH, "/"},
 		{"%", token.MODULUS, "%"},
 
+		// Augmented assignments
+		{"+=", token.AUG_PLUS, "+="},
+		{"-=", token.AUG_MINUS, "-="},
+		{"*=", token.AUG_ASTERISK, "*="},
+		{"/=", token.AUG_SLASH, "/="},
+		{"%=", token.AUG_MODULUS, "%="},
+
 		// Comparison Operators
 		{"<", token.LT, "<"},
 		{"<=", token.LT_EQ, "<="},
