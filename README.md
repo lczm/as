@@ -1,6 +1,6 @@
 # As
 
-This is a toy programming language mostly built for fun. The repository contains an interpreter to run 'as' code.
+This is a toy programming language mostly built for fun. The repository contains an interpreter to run 'as' code. Performance itself is not very fast as this is a tree-walking interpreter.
 
 ## Build
 ```bash
@@ -9,12 +9,12 @@ cd as
 go build
 ```
 
-## Run
+## Usage
 ```bash
 ./as {location_of_file}
 ```
 
-## Language specific
+## Language Details
 
 ### Variables
 ```javascript
@@ -40,6 +40,14 @@ a -= 5;
 a *= 2;
 a /= 3;
 a %= 10;
+```
+Increment / Decrements
+```javascript
+var a = 10;
+var b = 10;
+
+a++;
+b--;
 ```
 
 ### Control Flow & Comparison Operators & Logical Operators
