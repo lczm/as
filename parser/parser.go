@@ -322,6 +322,32 @@ func (p *Parser) assignment() ast.Expression {
 		}
 	}
 
+	// +=; -=; *=; /=; %=;
+	// Match for augmented assignments
+	for p.match(token.AUG_PLUS, token.AUG_MINUS, token.AUG_ASTERISK,
+		token.AUG_SLASH, token.AUG_MODULUS) {
+		var binaryExpr *ast.BinaryExpression
+		if p.previous().Type == token.AUG_PLUS {
+			// a += b; <- 'b' here can be an expression
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: p.expression(), // Recurse down an expression
+				Operator: token.Token{
+					Type:    token.PLUS,
+					Literal: "+",
+				},
+			}
+		}
+
+		// Check if it can be casted properly to a variableExpression
+		variableExpr := expr.(*ast.VariableExpression)
+
+		expr = &ast.AssignmentExpression{
+			Name:  variableExpr.Name,
+			Value: binaryExpr,
+		}
+	}
+
 	return expr
 }
 
