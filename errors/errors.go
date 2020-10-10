@@ -12,6 +12,9 @@ import (
 // line numbers and column numbers, they can then be passed into
 // the specific errors to give more detialed messages
 
+// TODO : Proper exit codes? as these are errors they should not
+// be 0 escapes
+
 // Initially this was implemented as with interfaces and structs
 // but there is really no need for that as it would complicate
 // things, so just simple functions to deal with errors would be enough.
@@ -27,6 +30,21 @@ func SyntaxError(tokenType token.TokenType, message string) {
 
 // Runtime errors will take in objects as they are
 // taken place during the interpreting phase
-func RuntimeError(rgs ...object.Object) {
-	fmt.Println("Hello from RuntimeError")
+func RuntimeError(obj object.Object, message string) {
+	fmt.Printf("Runtime Error : %s at %s\n", obj.String(), message)
+
+	// Quit the program without panicing
+	os.Exit(0)
+}
+
+// This is for error messages that are not the easiest to pass
+// objects into, i.e.
+// in the case where there is a need to handle multiple parameters
+// and they are not entirely relevant (builtin functions)
+// A simple message to show is okay.
+func DefaultError(message string) {
+	fmt.Printf("Error : %s\n", message)
+
+	// Quit the program without panicing
+	os.Exit(0)
 }
