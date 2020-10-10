@@ -603,8 +603,6 @@ func (p *Parser) eat(tokenType token.TokenType, message string) {
 		return
 	}
 
-	// TODO : Throw an error with the message that is passed in
-	// panic(message)
 	errors.SyntaxError(tokenType, message)
 }
 
