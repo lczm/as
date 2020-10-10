@@ -17,6 +17,13 @@ const (
 	SLASH    = "/"
 	MODULUS  = "%"
 
+	// Augmented assignment operators
+	AUG_PLUS     = "+="
+	AUG_MINUS    = "-="
+	AUG_ASTERISK = "*="
+	AUG_SLASH    = "/="
+	AUG_MODULUS  = "%="
+
 	// Comparison Operators
 	LT    = "<"
 	LT_EQ = "<="

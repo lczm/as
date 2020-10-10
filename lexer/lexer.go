@@ -34,6 +34,12 @@ func (l *Lexer) Scan(source string) []token.Token {
 					Literal: "++",
 				})
 				currentIndex++
+			} else if currentIndex < len(source) && source[currentIndex] == '=' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AUG_PLUS,
+					Literal: "+=",
+				})
+				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.PLUS,
@@ -45,6 +51,12 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.DECREMENT,
 					Literal: "--",
+				})
+				currentIndex++
+			} else if currentIndex < len(source) && source[currentIndex] == '=' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AUG_MINUS,
+					Literal: "-=",
 				})
 				currentIndex++
 			} else {
@@ -68,20 +80,44 @@ func (l *Lexer) Scan(source string) []token.Token {
 				})
 			}
 		case '*':
-			tokens = append(tokens, token.Token{
-				Type:    token.ASTERISK,
-				Literal: "*",
-			})
+			if currentIndex < len(source) && source[currentIndex] == '=' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AUG_ASTERISK,
+					Literal: "*=",
+				})
+				currentIndex++
+			} else {
+				tokens = append(tokens, token.Token{
+					Type:    token.ASTERISK,
+					Literal: "*",
+				})
+			}
 		case '/':
-			tokens = append(tokens, token.Token{
-				Type:    token.SLASH,
-				Literal: "/",
-			})
+			if currentIndex < len(source) && source[currentIndex] == '=' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AUG_SLASH,
+					Literal: "/=",
+				})
+				currentIndex++
+			} else {
+				tokens = append(tokens, token.Token{
+					Type:    token.SLASH,
+					Literal: "/",
+				})
+			}
 		case '%':
-			tokens = append(tokens, token.Token{
-				Type:    token.MODULUS,
-				Literal: "%",
-			})
+			if currentIndex < len(source) && source[currentIndex] == '=' {
+				tokens = append(tokens, token.Token{
+					Type:    token.AUG_MODULUS,
+					Literal: "%=",
+				})
+				currentIndex++
+			} else {
+				tokens = append(tokens, token.Token{
+					Type:    token.MODULUS,
+					Literal: "%",
+				})
+			}
 		// Comparison Operators
 		case '<':
 			if currentIndex < len(source) && source[currentIndex] == '=' {
