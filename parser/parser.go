@@ -337,6 +337,42 @@ func (p *Parser) assignment() ast.Expression {
 					Literal: "+",
 				},
 			}
+		} else if p.previous().Type == token.AUG_MINUS {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: p.expression(), // Recurse down an expression
+				Operator: token.Token{
+					Type:    token.MINUS,
+					Literal: "-",
+				},
+			}
+		} else if p.previous().Type == token.AUG_ASTERISK {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: p.expression(), // Recurse down an expression
+				Operator: token.Token{
+					Type:    token.ASTERISK,
+					Literal: "*",
+				},
+			}
+		} else if p.previous().Type == token.AUG_SLASH {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: p.expression(), // Recurse down an expression
+				Operator: token.Token{
+					Type:    token.SLASH,
+					Literal: "/",
+				},
+			}
+		} else if p.previous().Type == token.AUG_MODULUS {
+			binaryExpr = &ast.BinaryExpression{
+				Left:  expr,
+				Right: p.expression(), // Recurse down an expression
+				Operator: token.Token{
+					Type:    token.MODULUS,
+					Literal: "%",
+				},
+			}
 		}
 
 		// Check if it can be casted properly to a variableExpression
