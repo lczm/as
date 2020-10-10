@@ -154,11 +154,13 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 
 	switch expr.Operator.Type {
 	case token.PLUS: // Add
+		// Integers
 		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: leftValue + rightValue}
 		}
+		// Strings
 		if left.RawType() == object.STRING && right.RawType() == object.STRING {
 			leftValue := left.(*object.String).Value
 			rightValue := right.(*object.String).Value
@@ -216,15 +218,29 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 			return &object.Bool{Value: leftValue <= rightValue}
 		}
 	case token.EQ: // Equals '=='
+		// Integers
 		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
 			return &object.Bool{Value: leftValue == rightValue}
 		}
+		// Strings
+		if left.RawType() == object.STRING && right.RawType() == object.STRING {
+			leftValue := left.(*object.String).Value
+			rightValue := right.(*object.String).Value
+			return &object.Bool{Value: leftValue == rightValue}
+		}
 	case token.NOT_EQ: // Not equals '!='
+		// Integers
 		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
 			rightValue := right.(*object.Integer).Value
+			return &object.Bool{Value: leftValue != rightValue}
+		}
+		// Strings
+		if left.RawType() == object.STRING && right.RawType() == object.STRING {
+			leftValue := left.(*object.String).Value
+			rightValue := right.(*object.String).Value
 			return &object.Bool{Value: leftValue != rightValue}
 		}
 	}
