@@ -96,3 +96,6 @@ a = append(a, 5);
 |len()      |Returns the length of the input           |
 |type()     |Returns the type of the input             |
 |append()   |Appends an element to the container       |
+
+### Notes
+Since this is a toy language, just use whatever file extension that works for you. For syntax highlighting, it is more convenient to match the language syntax to Javascript (on whatever editor you use.).
