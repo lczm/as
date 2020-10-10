@@ -159,6 +159,11 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 			rightValue := right.(*object.Integer).Value
 			return &object.Integer{Value: leftValue + rightValue}
 		}
+		if left.RawType() == object.STRING && right.RawType() == object.STRING {
+			leftValue := left.(*object.String).Value
+			rightValue := right.(*object.String).Value
+			return &object.String{Value: leftValue + rightValue}
+		}
 	case token.MINUS: // Subtract
 		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
 			leftValue := left.(*object.Integer).Value
