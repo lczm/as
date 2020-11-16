@@ -142,6 +142,7 @@ func (r *Return) String() string {
 }
 
 // Container types - Lists/Hashmaps
+// List container type
 type List struct {
 	Value []Object
 }
@@ -158,6 +159,30 @@ func (l *List) String() string {
 	var valueStrings []string
 	for i := 0; i < len(l.Value); i++ {
 		valueStrings = append(valueStrings, l.Value[i].String())
+	}
+	// Sprintf can automatically convert an array of strings into
+	// a string for the output.
+	return fmt.Sprintf("%s\n", valueStrings)
+}
+
+// Hashmap container type
+// Note : Hashmaps maps object.Object to object.Object
+type HashMap struct {
+	Value map[Object]Object
+}
+
+func (hm *HashMap) RawType() string {
+	return HASHMAP
+}
+
+func (hm *HashMap) Type() string {
+	return fmt.Sprintf("HashMap: <%s>", HASHMAP)
+}
+
+func (hm *HashMap) String() string {
+	var valueStrings []string
+	for key, value := range hm.Value {
+		valueStrings = append(valueStrings, key.String(), ": ", value.String())
 	}
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
