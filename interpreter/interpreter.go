@@ -56,8 +56,7 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 	case *ast.LogicalExpression:
 		return i.evalLogicalExpression(node)
 	case *ast.NumberExpression:
-		numberValue := int64(node.Value)
-		return &object.Integer{Value: numberValue}
+		return &object.Integer{Value: int64(node.Value)}
 	case *ast.ListExpression:
 		return i.evalListExpression(node)
 	case *ast.StringExpression:
