@@ -141,3 +141,43 @@ func TestAppendFunc(t *testing.T) {
 		}
 	}
 }
+
+func TestRemoveAtFunc(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput string
+	}{
+		{
+			`
+            var output = [];
+            output = append(output, 1);
+			output = append(output, 2);
+			output = removeAt(output, 0);
+            `,
+			"[2]",
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := interpreter.New(statements)
+		interpreter.Start()
+
+		// Directly hook into the environment to check for output variable.
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+			// The object returns with strings, this should be fixed in the future, but
+			// for the time being this should do well enough for tests
+			if strings.TrimSuffix(obj.String(), "\n") != test.expectedOutput {
+				t.Fatalf("Test: [%d] - Incorrect value, expected=%s, got=%s",
+					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}
