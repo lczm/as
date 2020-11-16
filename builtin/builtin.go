@@ -89,9 +89,30 @@ func AppendFunc() object.Object {
 	return function
 }
 
+// Removes an element at the specified index
+func RemoveAtFunc() object.Object {
+	function := &object.BuiltinFunction{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				fmt.Println("removeAt() takes in two parameters, the list object and the index to remove at.")
+				return nil
+			}
+
+			list := args[0].(*object.List).Value
+			index := args[1].(*object.Integer).Value
+
+			list = append(list[:index], list[index+1:]...)
+
+			return &object.List{Value: list}
+		},
+	}
+	return function
+}
+
 func PopulateEnvironment(env *environment.Environment) {
 	env.Define("type", TypeFunc())
 	env.Define("len", LenFunc())
 	env.Define("print", PrintFunc())
 	env.Define("append", AppendFunc())
+	env.Define("removeAt", RemoveAtFunc())
 }

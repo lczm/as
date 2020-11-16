@@ -22,8 +22,9 @@ func (l *Lexer) Scan(source string) []token.Token {
 
 		switch ch {
 		case ' ':
-		case '\t':
-		case '\n':
+		case '\t': // Tabs
+		case '\n': // New line
+		case '\r': // Carriage Return (CR)
 			break
 		// Operators
 		case '+':
@@ -278,7 +279,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 				currentIndex = extendedIndex
 			} else {
 				// TODO : Do some form of error handling here
-				fmt.Println("The lexer cannot handle this character")
+				fmt.Println("The lexer cannot handle this character : ", string(ch))
 			}
 		}
 	}
