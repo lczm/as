@@ -13,6 +13,9 @@ type Lexer struct {
 func (l *Lexer) Scan(source string) []token.Token {
 	var tokens []token.Token
 
+	// Default to line 1
+	currentLine := 1
+
 	currentIndex := 0
 	for currentIndex < len(source) {
 		// Get the current character
@@ -24,6 +27,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 		case ' ':
 		case '\t': // Tabs
 		case '\n': // New line
+			currentLine++
 		case '\r': // Carriage Return (CR)
 			break
 		// Operators
@@ -33,18 +37,21 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.INCREMENT,
 					Literal: "++",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else if currentIndex < len(source) && source[currentIndex] == '=' {
 				tokens = append(tokens, token.Token{
 					Type:    token.AUG_PLUS,
 					Literal: "+=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.PLUS,
 					Literal: "+",
+					Line:    currentLine,
 				})
 			}
 		case '-':
@@ -52,18 +59,21 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.DECREMENT,
 					Literal: "--",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else if currentIndex < len(source) && source[currentIndex] == '=' {
 				tokens = append(tokens, token.Token{
 					Type:    token.AUG_MINUS,
 					Literal: "-=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.MINUS,
 					Literal: "-",
+					Line:    currentLine,
 				})
 			}
 		case '!':
@@ -72,12 +82,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.NOT_EQ,
 					Literal: "!=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else { // Handle the case of '!'
 				tokens = append(tokens, token.Token{
 					Type:    token.BANG,
 					Literal: "!",
+					Line:    currentLine,
 				})
 			}
 		case '*':
@@ -85,12 +97,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.AUG_ASTERISK,
 					Literal: "*=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.ASTERISK,
 					Literal: "*",
+					Line:    currentLine,
 				})
 			}
 		case '/':
@@ -98,12 +112,21 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.AUG_SLASH,
 					Literal: "/=",
+					Line:    currentLine,
+				})
+				currentIndex++
+			} else if currentIndex < len(source) && source[currentIndex] == '/' {
+				tokens = append(tokens, token.Token{
+					Type:    token.COMMENT,
+					Literal: "//",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.SLASH,
 					Literal: "/",
+					Line:    currentLine,
 				})
 			}
 		case '%':
@@ -111,12 +134,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.AUG_MODULUS,
 					Literal: "%=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.MODULUS,
 					Literal: "%",
+					Line:    currentLine,
 				})
 			}
 		// Comparison Operators
@@ -125,12 +150,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.LT_EQ,
 					Literal: "<=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.LT,
 					Literal: "<",
+					Line:    currentLine,
 				})
 			}
 		case '>':
@@ -138,12 +165,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.GT_EQ,
 					Literal: ">=",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
 				tokens = append(tokens, token.Token{
 					Type:    token.GT,
 					Literal: ">",
+					Line:    currentLine,
 				})
 			}
 		case '=':
@@ -152,12 +181,14 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.EQ,
 					Literal: "==",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else { // Handle the case of '='
 				tokens = append(tokens, token.Token{
 					Type:    token.ASSIGN,
 					Literal: "=",
+					Line:    currentLine,
 				})
 			}
 		// Logical Comparisons
@@ -166,6 +197,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.AND,
 					Literal: "&&",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
@@ -176,6 +208,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.OR,
 					Literal: "||",
+					Line:    currentLine,
 				})
 				currentIndex++
 			} else {
@@ -186,46 +219,55 @@ func (l *Lexer) Scan(source string) []token.Token {
 			tokens = append(tokens, token.Token{
 				Type:    token.COMMA,
 				Literal: ",",
+				Line:    currentLine,
 			})
 		case ':':
 			tokens = append(tokens, token.Token{
 				Type:    token.COLON,
 				Literal: ":",
+				Line:    currentLine,
 			})
 		case ';':
 			tokens = append(tokens, token.Token{
 				Type:    token.SEMICOLON,
 				Literal: ";",
+				Line:    currentLine,
 			})
 		case '(':
 			tokens = append(tokens, token.Token{
 				Type:    token.LPAREN,
 				Literal: "(",
+				Line:    currentLine,
 			})
 		case ')':
 			tokens = append(tokens, token.Token{
 				Type:    token.RPAREN,
 				Literal: ")",
+				Line:    currentLine,
 			})
 		case '{':
 			tokens = append(tokens, token.Token{
 				Type:    token.LBRACE,
 				Literal: "{",
+				Line:    currentLine,
 			})
 		case '}':
 			tokens = append(tokens, token.Token{
 				Type:    token.RBRACE,
 				Literal: "}",
+				Line:    currentLine,
 			})
 		case '[':
 			tokens = append(tokens, token.Token{
 				Type:    token.LBRACKET,
 				Literal: "[",
+				Line:    currentLine,
 			})
 		case ']':
 			tokens = append(tokens, token.Token{
 				Type:    token.RBRACKET,
 				Literal: "]",
+				Line:    currentLine,
 			})
 		case '"':
 			extendedIndex := currentIndex
@@ -239,6 +281,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 			tokens = append(tokens, token.Token{
 				Type:    token.STRING,
 				Literal: stringValue,
+				Line:    currentLine,
 			})
 		default:
 			if l.isDigit(ch) { // Handle numeric case
@@ -250,6 +293,7 @@ func (l *Lexer) Scan(source string) []token.Token {
 				tokens = append(tokens, token.Token{
 					Type:    token.NUMBER,
 					Literal: source[currentIndex-1 : extendedIndex],
+					Line:    currentLine,
 				})
 				currentIndex = extendedIndex
 			} else if l.isAlphaNumeric(ch) { // Handle alpha-numeric case
@@ -269,11 +313,13 @@ func (l *Lexer) Scan(source string) []token.Token {
 					tokens = append(tokens, token.Token{
 						Type:    l.Keywords[identifier],
 						Literal: identifier,
+						Line:    currentLine,
 					})
 				} else {
 					tokens = append(tokens, token.Token{
 						Type:    token.IDENTIFIER,
 						Literal: identifier,
+						Line:    currentLine,
 					})
 				}
 				currentIndex = extendedIndex

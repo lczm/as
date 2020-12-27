@@ -4,6 +4,7 @@ type TokenType string
 type Token struct {
 	Type    TokenType
 	Literal string
+	Line    int
 }
 
 // Available Tokens
@@ -51,6 +52,9 @@ const (
 	// Quotes, usually for strings
 	SINGLE_QUOTE = "'"
 	DOUBLE_QUOTE = "\""
+
+	// Single line comments
+	COMMENT = "//"
 
 	// Increment / Decrement
 	INCREMENT = "++"
