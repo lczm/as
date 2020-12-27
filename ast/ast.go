@@ -93,7 +93,7 @@ type AssignmentExpression struct {
 func (ae *AssignmentExpression) expression() {}
 func (ae *AssignmentExpression) String() string {
 	return fmt.Sprintf("(AssignmentExpression) Name : %s, Value : %s\n",
-		ae.Name, ae.Value.String())
+		ae.Name.Literal, ae.Value.String())
 }
 
 type BinaryExpression struct {
