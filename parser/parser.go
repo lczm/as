@@ -641,6 +641,9 @@ func (p *Parser) match(tokens ...token.TokenType) bool {
 }
 
 func (p *Parser) peek() token.Token {
+	if p.current < 0 || p.current == len(p.tokens) {
+		panic("Parsing an out of range index")
+	}
 	return p.tokens[p.current]
 }
 
