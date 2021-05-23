@@ -51,8 +51,12 @@ func main() {
 	semanticAnalyzer := analysis.New(statements)
 	semanticAnalyzer.Analyze()
 
-	for _, error := range globals.ErrorList {
-		error.Describe()
+	// TODO : if it is more than 0, and there is some form of strict flag
+	// this should not continue running
+	if len(globals.ErrorList) > 0 {
+		for _, error := range globals.ErrorList {
+			error.Describe()
+		}
 	}
 
 	interpreter := interpreter.New(statements)
