@@ -5,6 +5,7 @@ import (
 
 	"github.com/lczm/as/ast"
 	"github.com/lczm/as/errors"
+	"github.com/lczm/as/globals"
 	"github.com/lczm/as/token"
 )
 
@@ -669,7 +670,7 @@ func (p *Parser) eat(tokenType token.TokenType, message string) {
 		return
 	}
 
-	errors.SyntaxError(tokenType, message)
+	globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(tokenType, message))
 }
 
 func New(tokens []token.Token) *Parser {

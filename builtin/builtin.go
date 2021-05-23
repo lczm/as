@@ -5,6 +5,7 @@ import (
 
 	"github.com/lczm/as/environment"
 	"github.com/lczm/as/errors"
+	"github.com/lczm/as/globals"
 	"github.com/lczm/as/object"
 )
 
@@ -13,7 +14,9 @@ func TypeFunc() object.Object {
 		Name: "type",
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
-				errors.DefaultError("type() can only take in one parameter at a time.")
+				// errors.DefaultError("type() can only take in one parameter at a time.")
+				globals.ErrorList = append(globals.ErrorList,
+					errors.NewDefaultError("type() can only take in one parameter at a time."))
 			}
 
 			obj := args[0]
@@ -28,13 +31,15 @@ func LenFunc() object.Object {
 		Name: "len",
 		Fn: func(args ...object.Object) object.Object {
 			if len(args) != 1 {
-				errors.DefaultError("len() needs at least one parameter.")
+				globals.ErrorList = append(globals.ErrorList,
+					errors.NewDefaultError("len() needs at least one parameter."))
 			}
 
 			obj := args[0]
 			switch obj := obj.(type) {
 			case *object.Integer:
-				errors.DefaultError("len() cannot be used on an integer.")
+				globals.ErrorList = append(globals.ErrorList,
+					errors.NewDefaultError("len() cannot be used on an integer"))
 			case *object.String:
 				return &object.Integer{Value: int64(len(obj.String()))}
 			case *object.List:

@@ -6,6 +6,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/lczm/as/analysis"
+	"github.com/lczm/as/globals"
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
 	"github.com/lczm/as/parser"
@@ -37,12 +39,22 @@ func main() {
 
 	input := string(data)
 
+	// Lex the program into tokens
 	lexer := lexer.New()
 	tokens := lexer.Scan(input)
 
+	// Parse the tokens into an AST of statements
 	parser := parser.New(tokens)
-	expressions := parser.Parse()
+	statements := parser.Parse()
 
-	interpreter := interpreter.New(expressions)
+	// Analyze the values
+	semanticAnalyzer := analysis.New(statements)
+	semanticAnalyzer.Analyze()
+
+	for _, error := range globals.ErrorList {
+		error.Describe()
+	}
+
+	interpreter := interpreter.New(statements)
 	interpreter.Start()
 }

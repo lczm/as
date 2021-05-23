@@ -2,7 +2,6 @@ package errors
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/lczm/as/object"
 	"github.com/lczm/as/token"
@@ -15,26 +14,52 @@ import (
 // TODO : Proper exit codes? as these are errors they should not
 // be 0 escapes
 
+type Error interface {
+	Describe()
+}
+
 // Initially this was implemented as with interfaces and structs
 // but there is really no need for that as it would complicate
 // things, so just simple functions to deal with errors would be enough.
 
 // Syntax errors would take in tokens as arguments as
 // it will take place in the parsing phase
-func SyntaxError(tokenType token.TokenType, message string) {
-	fmt.Printf("Syntax Error at '%s' : %s\n", tokenType, message)
+type SyntaxError struct {
+	Error
+	tokenType token.TokenType
+	message   string
+}
 
-	// Quit the program without panicing
-	os.Exit(0)
+func NewSyntaxError(tokenType token.TokenType, message string) SyntaxError {
+	se := SyntaxError{
+		tokenType: tokenType,
+		message:   message,
+	}
+	return se
+}
+
+func (se SyntaxError) Describe() {
+	fmt.Printf("Syntax Error at '%s' : %s\n", se.tokenType, se.message)
 }
 
 // Runtime errors will take in objects as they are
 // taken place during the interpreting phase
-func RuntimeError(obj object.Object, message string) {
-	fmt.Printf("Runtime Error : %s at %s\n", obj.String(), message)
+type RuntimeError struct {
+	Error
+	object  object.Object
+	message string
+}
 
-	// Quit the program without panicing
-	os.Exit(0)
+func NewRuntimeError(obj object.Object, message string) RuntimeError {
+	re := RuntimeError{
+		object:  obj,
+		message: message,
+	}
+	return re
+}
+
+func (re RuntimeError) Describe() {
+	fmt.Printf("Runtime Error : %s at %s\n", re.object.String(), re.message)
 }
 
 // This is for error messages that are not the easiest to pass
@@ -42,9 +67,18 @@ func RuntimeError(obj object.Object, message string) {
 // in the case where there is a need to handle multiple parameters
 // and they are not entirely relevant (builtin functions)
 // A simple message to show is okay.
-func DefaultError(message string) {
-	fmt.Printf("Error : %s\n", message)
+type DefaultError struct {
+	Error
+	message string
+}
 
-	// Quit the program without panicing
-	os.Exit(0)
+func NewDefaultError(message string) DefaultError {
+	de := DefaultError{
+		message: message,
+	}
+	return de
+}
+
+func (de DefaultError) Describe() {
+	fmt.Printf("Error : %s\n", de.message)
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/lczm/as/builtin"
 	"github.com/lczm/as/environment"
 	"github.com/lczm/as/errors"
+	"github.com/lczm/as/globals"
 	"github.com/lczm/as/object"
 	"github.com/lczm/as/token"
 )
@@ -347,8 +348,8 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 
 		intIndex, ok := evaluatedIndex.(*object.Integer)
 		if !ok {
-			errors.RuntimeError(evaluatedIndex,
-				"Indexed operation on a list expression is not an integer")
+			globals.ErrorList = append(globals.ErrorList,
+				errors.NewRuntimeError(evaluatedIndex, "Indexed operation on a list expression is not an integer"))
 		}
 
 		obj := callee.Value[intIndex.Value]
@@ -360,8 +361,8 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 
 		intIndex, ok := evaluatedIndex.(*object.Integer)
 		if !ok {
-			errors.RuntimeError(evaluatedIndex,
-				"Indexed operation on a list expression is not an integer")
+			globals.ErrorList = append(globals.ErrorList,
+				errors.NewRuntimeError(evaluatedIndex, "Indexed operation on a list expression is not an integer"))
 		}
 
 		return &object.String{Value: string(callee.Value[intIndex.Value])}
