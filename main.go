@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 
 	"github.com/lczm/as/interpreter"
 	"github.com/lczm/as/lexer"
@@ -10,8 +12,22 @@ import (
 )
 
 func main() {
-	arguments := os.Args[1:]
+	// If there are no arguments passed into the binary, don't prompt a help
+	// message and exit from the program, don't continue to do anything
+	if len(os.Args) == 1 {
+		userOs := runtime.GOOS
+		fmt.Println("No files found.")
+		switch userOs {
+		case "windows": // Windows
+			fmt.Println("Usage: as {file}")
+		default: // Mac, Linux
+			fmt.Println("Usage: ./as {file}")
+		}
+		os.Exit(0)
+	}
 
+	// Grab all the arguments
+	arguments := os.Args[1:]
 	if len(arguments) > 1 {
 		os.Exit(1)
 	}
