@@ -297,16 +297,23 @@ func (i *Interpreter) evalListExpression(expr *ast.ListExpression) object.Object
 }
 
 func (i *Interpreter) evalHashMapExpression(expr *ast.HashMapExpression) object.Object {
-	var hashMap map[object.HashValue]object.Object
-	hashMap = make(map[object.HashValue]object.Object)
+	var hashMap map[object.HashKey]object.HashValue
+	hashMap = make(map[object.HashKey]object.HashValue)
 	for k, v := range expr.Values {
 		evaluatedKey := i.Eval(k)
 		evaluatedKeyHashable, ok := evaluatedKey.(object.Hashable)
 		if !ok {
 			panic("Object is not hashable")
 		}
+
+		evaluatedValue := i.Eval(v)
+
 		objHash := evaluatedKeyHashable.Hash()
-		hashMap[objHash] = i.Eval(v)
+		hashValue := object.HashValue{
+			Key:   evaluatedKey,
+			Value: evaluatedValue,
+		}
+		hashMap[objHash] = hashValue
 	}
 	return &object.HashMap{
 		Value: hashMap,
@@ -382,7 +389,7 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		if ok {
 			obj, found := callee.Value[objectHashable.Hash()]
 			if found {
-				return obj
+				return obj.Value
 			}
 		}
 

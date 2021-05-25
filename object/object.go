@@ -36,15 +36,20 @@ type Callable interface {
 // But for now I think string will work just fine?
 // Objects will implement RawType() which can then
 // be used to supply this value.
-type HashValue struct {
+type HashKey struct {
 	Type  string
 	Value int
+}
+
+type HashValue struct {
+	Key   Object
+	Value Object
 }
 
 // All hashable objects will implement this interface
 // i.e. anything that can be used as a hashmap key
 type Hashable interface {
-	Hash() HashValue
+	Hash() HashKey
 }
 
 // Boolean type
@@ -67,11 +72,13 @@ func (b *Bool) String() string {
 	return "false"
 }
 
-func (b *Bool) Hash() HashValue {
+func (b *Bool) Hash() HashKey {
 	if b.Value == true {
-		return HashValue{Type: b.RawType(), Value: 1}
+		return HashKey{Type: b.RawType(),
+			Value: 1}
 	} else {
-		return HashValue{Type: b.RawType(), Value: 0}
+		return HashKey{Type: b.RawType(),
+			Value: 0}
 	}
 }
 
@@ -92,8 +99,9 @@ func (i *Integer) String() string {
 	return fmt.Sprintf("%d", i.Value)
 }
 
-func (i *Integer) Hash() HashValue {
-	return HashValue{Type: i.RawType(), Value: int(i.Value)}
+func (i *Integer) Hash() HashKey {
+	return HashKey{Type: i.RawType(),
+		Value: int(i.Value)}
 }
 
 // String type
@@ -113,11 +121,12 @@ func (s *String) String() string {
 	return s.Value
 }
 
-func (s *String) Hash() HashValue {
+func (s *String) Hash() HashKey {
 	// FNV-1a hash
 	hash := fnv.New64a()
 	hash.Write([]byte(s.Value))
-	return HashValue{Type: s.RawType(), Value: int(hash.Sum64())}
+	return HashKey{Type: s.RawType(),
+		Value: int(hash.Sum64())}
 }
 
 // Function type, it is an Object as well as a Callable
@@ -203,7 +212,7 @@ func (l *List) String() string {
 // Hashmap container type
 // Note : Hashmaps maps object.Object to object.Object
 type HashMap struct {
-	Value map[HashValue]Object
+	Value map[HashKey]HashValue
 }
 
 func (hm *HashMap) RawType() string {
@@ -217,7 +226,7 @@ func (hm *HashMap) Type() string {
 func (hm *HashMap) String() string {
 	var valueStrings []string
 	// for key, value := range hm.Value {
-	// 	valueStrings = append(valueStrings, key.Value, ": ", value.String())
+	// 	valueStrings = append(valueStrings, key.Object.String(), ": ", value.String())
 	// }
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
