@@ -297,10 +297,16 @@ func (i *Interpreter) evalListExpression(expr *ast.ListExpression) object.Object
 }
 
 func (i *Interpreter) evalHashMapExpression(expr *ast.HashMapExpression) object.Object {
-	var hashMap map[object.Object]object.Object
-	hashMap = make(map[object.Object]object.Object)
+	var hashMap map[object.HashValue]object.Object
+	hashMap = make(map[object.HashValue]object.Object)
 	for k, v := range expr.Values {
-		hashMap[i.Eval(k)] = i.Eval(v)
+		evaluatedKey := i.Eval(k)
+		evaluatedKeyHashable, ok := evaluatedKey.(object.Hashable)
+		if !ok {
+			panic("Object is not hashable")
+		}
+		objHash := evaluatedKeyHashable.Hash()
+		hashMap[objHash] = i.Eval(v)
 	}
 	return &object.HashMap{
 		Value: hashMap,
@@ -367,6 +373,21 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 
 		obj := callee.Value[intIndex.Value]
 		return obj
+	case *object.HashMap:
+		// Get the object
+		objectIndex := i.Eval(expr.Arguments[0])
+
+		// TODO : Refactor this
+		objectHashable, ok := objectIndex.(object.Hashable)
+		if ok {
+			obj, found := callee.Value[objectHashable.Hash()]
+			if found {
+				return obj
+			}
+		}
+
+		// object not found
+		return nil
 	case *object.String:
 		// Same as above, on the list, by the time it reaches here,
 		// it is known that there is only one expression
