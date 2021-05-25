@@ -118,7 +118,7 @@ func (s *String) Type() string {
 }
 
 func (s *String) String() string {
-	return s.Value
+	return "\"" + s.Value + "\""
 }
 
 func (s *String) Hash() HashKey {
@@ -225,9 +225,12 @@ func (hm *HashMap) Type() string {
 
 func (hm *HashMap) String() string {
 	var valueStrings []string
-	// for key, value := range hm.Value {
-	// 	valueStrings = append(valueStrings, key.Object.String(), ": ", value.String())
-	// }
+
+	// Don't need the key here
+	for _, value := range hm.Value {
+		valueStrings = append(valueStrings, value.Key.String(), ": ", value.Value.String())
+	}
+
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
 	return fmt.Sprintf("%s\n", valueStrings)
