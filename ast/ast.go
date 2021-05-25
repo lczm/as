@@ -154,6 +154,20 @@ func (le *ListExpression) String() string {
 	return fmt.Sprintf("(ListExpression) Values : %s", le.String())
 }
 
+type HashMapExpression struct {
+	Values map[Expression]Expression
+}
+
+func (hme *HashMapExpression) expression() {}
+func (hme *HashMapExpression) String() string {
+	var stringValues []string
+	for k, v := range hme.Values {
+		stringValues = append(stringValues,
+			fmt.Sprintf("Key: %s, Value: %s\n", k.String(), v.String()))
+	}
+	return fmt.Sprintf("(HashMapExpression) : \n %s", stringValues)
+}
+
 type StringExpression struct {
 	Value string
 }

@@ -625,6 +625,38 @@ func (p *Parser) primary() ast.Expression {
 		}
 	}
 
+	// Hashmap declaration
+	if p.match(token.LBRACE) {
+		// var hashMap map[ast.Expression]ast.Expression
+		hashMap := make(map[ast.Expression]ast.Expression, 0)
+		emptyHashMap := true
+
+		// This doesnt assume multiple lines, and only assumes one.
+		// {
+		//   expression: expression
+		// }
+		for !p.match(token.RBRACE) {
+			key := p.expression()
+			if !p.match(token.COLON) {
+				panic("Syntax error while matching key/value in HashMap")
+			}
+			value := p.expression()
+			hashMap[key] = value
+			p.match(token.COMMA)
+		}
+
+		// Move back one as p.match() will automatically
+		// move the cursor ahead by one token
+		if emptyHashMap {
+			p.current--
+		}
+
+		p.eat(token.RBRACE, "Expect '}' after '{' (Start of hashmap)")
+		return &ast.HashMapExpression{
+			Values: hashMap,
+		}
+	}
+
 	return nil
 }
 

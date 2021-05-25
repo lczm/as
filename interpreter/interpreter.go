@@ -60,6 +60,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return &object.Integer{Value: int64(node.Value)}
 	case *ast.ListExpression:
 		return i.evalListExpression(node)
+	case *ast.HashMapExpression:
+		return i.evalHashMapExpression(node)
 	case *ast.StringExpression:
 		return &object.String{Value: node.Value}
 	case *ast.BoolExpression:
@@ -291,6 +293,17 @@ func (i *Interpreter) evalListExpression(expr *ast.ListExpression) object.Object
 	}
 	return &object.List{
 		Value: evaluatedExpressions,
+	}
+}
+
+func (i *Interpreter) evalHashMapExpression(expr *ast.HashMapExpression) object.Object {
+	var hashMap map[object.Object]object.Object
+	hashMap = make(map[object.Object]object.Object)
+	for k, v := range expr.Values {
+		hashMap[i.Eval(k)] = i.Eval(v)
+	}
+	return &object.HashMap{
+		Value: hashMap,
 	}
 }
 
