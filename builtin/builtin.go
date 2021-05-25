@@ -44,6 +44,8 @@ func LenFunc() object.Object {
 				return &object.Integer{Value: int64(len(obj.String()))}
 			case *object.List:
 				return &object.Integer{Value: int64(len(obj.Value))}
+			case *object.HashMap:
+				return &object.Integer{Value: int64(len(obj.Value))}
 			default:
 				return nil
 			}
