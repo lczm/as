@@ -54,9 +54,22 @@ func main() {
 	// TODO : if it is more than 0, and there is some form of strict flag
 	// this should not continue running
 	if len(globals.ErrorList) > 0 {
+		// If there are any errors that are detected
 		for _, error := range globals.ErrorList {
 			error.Describe()
 		}
+		// TODO : Find the correct error code to exit from an error
+		os.Exit(1)
+	}
+
+	// TODO : Some form of flag to determine whether this should be continued or not
+	if len(globals.WarningList) > 0 {
+		for _, warning := range globals.WarningList {
+			warning.Describe()
+		}
+		// If there is a flag to determine that this should not be continued;
+		// then this should exited
+		// os.Exit(1)
 	}
 
 	interpreter := interpreter.New(statements)

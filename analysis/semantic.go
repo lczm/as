@@ -1,9 +1,9 @@
 package analysis
 
 import (
-	"fmt"
-
 	"github.com/lczm/as/ast"
+	"github.com/lczm/as/errors"
+	"github.com/lczm/as/globals"
 )
 
 type SemanticAnalyzer struct {
@@ -34,7 +34,7 @@ func (s *SemanticAnalyzer) resolveVariable(node *ast.VariableStatement) bool {
 		_, found := (*scope)[node.Name.Literal]
 		if found {
 			// Shadow warning, variable name has been declared already but now it is declared again
-			fmt.Printf("Shadow warning at line %d, Declaring an already declared variable: \"%s\"", node.Name.Line, node.Name.Literal)
+			globals.WarningList = append(globals.WarningList, errors.NewShadowWarning(node.Name.Line, node.Name.Literal))
 			return false
 		}
 	}

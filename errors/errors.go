@@ -82,3 +82,21 @@ func NewDefaultError(message string) DefaultError {
 func (de DefaultError) Describe() {
 	fmt.Printf("Error : %s\n", de.message)
 }
+
+type ShadowWarning struct {
+	Error
+	line         int
+	variableName string
+}
+
+func NewShadowWarning(line int, variableName string) ShadowWarning {
+	sw := ShadowWarning{
+		line:         line,
+		variableName: variableName,
+	}
+	return sw
+}
+
+func (sw ShadowWarning) Describe() {
+	fmt.Printf("Shadow warning at line %d, Declaring an already declared variable: \"%s\"", sw.line, sw.variableName)
+}
