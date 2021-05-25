@@ -24,6 +24,9 @@ type Object interface {
 	RawType() string
 	Type() string
 	String() string
+	// This is for something like the String type; where it adds '"' with it
+	// Otherwise, this will return the same as String() for most types.
+	FormattedString() string
 }
 
 // All the call-able objects will implement this interface
@@ -72,6 +75,13 @@ func (b *Bool) String() string {
 	return "false"
 }
 
+func (b *Bool) FormattedString() string {
+	if b.Value == true {
+		return "true"
+	}
+	return "false"
+}
+
 func (b *Bool) Hash() HashKey {
 	if b.Value == true {
 		return HashKey{Type: b.RawType(),
@@ -99,6 +109,10 @@ func (i *Integer) String() string {
 	return fmt.Sprintf("%d", i.Value)
 }
 
+func (i *Integer) FormattedString() string {
+	return fmt.Sprintf("%d", i.Value)
+}
+
 func (i *Integer) Hash() HashKey {
 	return HashKey{Type: i.RawType(),
 		Value: int(i.Value)}
@@ -118,6 +132,10 @@ func (s *String) Type() string {
 }
 
 func (s *String) String() string {
+	return s.Value
+}
+
+func (s *String) FormattedString() string {
 	return "\"" + s.Value + "\""
 }
 
@@ -146,6 +164,10 @@ func (f *Function) String() string {
 	return fmt.Sprintf("Function : <%s>", f.FunctionStatement.Name.Literal)
 }
 
+func (f *Function) FormattedString() string {
+	return fmt.Sprintf("Function : <%s>", f.FunctionStatement.Name.Literal)
+}
+
 type BuiltinFunction struct {
 	Name string
 	Fn   func(args ...Object) Object
@@ -160,6 +182,10 @@ func (bf *BuiltinFunction) Type() string {
 }
 
 func (bf *BuiltinFunction) String() string {
+	return fmt.Sprintf("BulitinFunction: <%s>", bf.Name)
+}
+
+func (bf *BuiltinFunction) FormattedString() string {
 	return fmt.Sprintf("BulitinFunction: <%s>", bf.Name)
 }
 
@@ -185,6 +211,10 @@ func (r *Return) String() string {
 	return r.Value.String()
 }
 
+func (r *Return) FormattedString() string {
+	return r.Value.String()
+}
+
 // Container types - Lists/Hashmaps
 // List container type
 type List struct {
@@ -200,6 +230,16 @@ func (l *List) Type() string {
 }
 
 func (l *List) String() string {
+	var valueStrings []string
+	for i := 0; i < len(l.Value); i++ {
+		valueStrings = append(valueStrings, l.Value[i].String())
+	}
+	// Sprintf can automatically convert an array of strings into
+	// a string for the output.
+	return fmt.Sprintf("%s\n", valueStrings)
+}
+
+func (l *List) FormattedString() string {
 	var valueStrings []string
 	for i := 0; i < len(l.Value); i++ {
 		valueStrings = append(valueStrings, l.Value[i].String())
@@ -228,7 +268,20 @@ func (hm *HashMap) String() string {
 
 	// Don't need the key here
 	for _, value := range hm.Value {
-		valueStrings = append(valueStrings, value.Key.String(), ": ", value.Value.String())
+		valueStrings = append(valueStrings, value.Key.FormattedString(), ": ", value.Value.String())
+	}
+
+	// Sprintf can automatically convert an array of strings into
+	// a string for the output.
+	return fmt.Sprintf("%s\n", valueStrings)
+}
+
+func (hm *HashMap) FormattedString() string {
+	var valueStrings []string
+
+	// Don't need the key here
+	for _, value := range hm.Value {
+		valueStrings = append(valueStrings, value.Key.FormattedString(), ": ", value.Value.String())
 	}
 
 	// Sprintf can automatically convert an array of strings into
