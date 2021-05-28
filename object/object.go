@@ -267,8 +267,17 @@ func (hm *HashMap) String() string {
 	var valueStrings []string
 
 	// Don't need the key here
+	count := 0
+	length := len(hm.Value)
 	for _, value := range hm.Value {
-		valueStrings = append(valueStrings, value.Key.FormattedString(), ": ", value.Value.String())
+		if count == length-1 {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("%s: %s\n", value.Key.FormattedString(), value.Value.String()))
+		} else {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("%s: %s, \n", value.Key.FormattedString(), value.Value.String()))
+		}
+		count++
 	}
 
 	// Sprintf can automatically convert an array of strings into
@@ -280,8 +289,17 @@ func (hm *HashMap) FormattedString() string {
 	var valueStrings []string
 
 	// Don't need the key here
+	count := 0
+	length := len(hm.Value)
 	for _, value := range hm.Value {
-		valueStrings = append(valueStrings, value.Key.FormattedString(), ": ", value.Value.String())
+		if count == length-1 {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("%s: %s\n", value.Key.FormattedString(), value.Value.String()))
+		} else {
+			valueStrings = append(valueStrings,
+				fmt.Sprintf("%s: %s, \n", value.Key.FormattedString(), value.Value.String()))
+		}
+		count++
 	}
 
 	// Sprintf can automatically convert an array of strings into
