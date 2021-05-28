@@ -39,6 +39,21 @@ func (e *Environment) SetIndex(name string, index object.Object, value object.Ob
 		if listOk && listIndexOk {
 			list.Value[listIndex.Value] = value
 		}
+
+		hash, hashOk := e.Values[name].(*object.HashMap)
+		_, hashable := index.(object.Hashable)
+		if hashOk && hashable {
+			// Construct the hashkey here.
+			hashKey := object.HashKey{
+				Type:  index.RawType(),
+				Value: index.(object.Hashable).Hash().Value,
+			}
+			hashValue := object.HashValue{
+				Key:   index,
+				Value: value,
+			}
+			hash.Value[hashKey] = hashValue
+		}
 		return
 	}
 
