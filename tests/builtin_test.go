@@ -105,7 +105,7 @@ func TestAppendFunc(t *testing.T) {
             output = append(output, 1);
             output = append(output, 2);
             `,
-			"[1 2]",
+			"[1, 2]",
 		},
 		{
 			`
@@ -114,7 +114,7 @@ func TestAppendFunc(t *testing.T) {
                 output = append(output, a);
             }
             `,
-			"[0 1 2 3 4]",
+			"[0, 1, 2, 3, 4]",
 		},
 	}
 

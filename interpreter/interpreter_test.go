@@ -59,6 +59,43 @@ func TestIntegerExpressions(t *testing.T) {
 	}
 }
 
+func TestIndexExpressions(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput string
+	}{
+		{
+			`
+			var output = [0, 1, 2, 3];
+			output[0] = 100;
+			`,
+			"[100, 1, 2, 3]",
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		// Directly hook into the eval function instead, as
+		// the Start() method is self contained
+		interpreter.Start()
+
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+			if test.expectedOutput != obj.String() {
+				t.Fatalf("Test : [%d] - Mismatch in values, expected=%s, got=%s",
+					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}
+
 func TestIncrementDecrement(t *testing.T) {
 	tests := []struct {
 		input          string

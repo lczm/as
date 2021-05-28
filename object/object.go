@@ -232,21 +232,30 @@ func (l *List) Type() string {
 func (l *List) String() string {
 	var valueStrings []string
 	for i := 0; i < len(l.Value); i++ {
-		valueStrings = append(valueStrings, l.Value[i].String())
+		if i == len(l.Value)-1 {
+			valueStrings = append(valueStrings, fmt.Sprintf("%s", l.Value[i].String()))
+		} else {
+			valueStrings = append(valueStrings, fmt.Sprintf("%s,", l.Value[i].String()))
+		}
 	}
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
-	return fmt.Sprintf("%s\n", valueStrings)
+	return fmt.Sprintf("%s", valueStrings)
 }
 
 func (l *List) FormattedString() string {
 	var valueStrings []string
 	for i := 0; i < len(l.Value); i++ {
-		valueStrings = append(valueStrings, l.Value[i].String())
+		// valueStrings = append(valueStrings, l.Value[i].String())
+		if i == len(l.Value)-1 {
+			valueStrings = append(valueStrings, fmt.Sprintf("%s", l.Value[i].String()))
+		} else {
+			valueStrings = append(valueStrings, fmt.Sprintf("%s,", l.Value[i].String()))
+		}
 	}
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
-	return fmt.Sprintf("%s\n", valueStrings)
+	return fmt.Sprintf("%s", valueStrings)
 }
 
 // Hashmap container type
@@ -282,7 +291,7 @@ func (hm *HashMap) String() string {
 
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
-	return fmt.Sprintf("%s\n", valueStrings)
+	return fmt.Sprintf("%s", valueStrings)
 }
 
 func (hm *HashMap) FormattedString() string {
@@ -304,5 +313,5 @@ func (hm *HashMap) FormattedString() string {
 
 	// Sprintf can automatically convert an array of strings into
 	// a string for the output.
-	return fmt.Sprintf("%s\n", valueStrings)
+	return fmt.Sprintf("%s", valueStrings)
 }
