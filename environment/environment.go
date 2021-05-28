@@ -33,7 +33,6 @@ func (e *Environment) Set(name string, value object.Object) {
 func (e *Environment) SetIndex(name string, index object.Object, value object.Object) {
 	_, ok := e.Values[name]
 	if ok {
-		// TODO : Do this for hashmaps as well
 		list, listOk := e.Values[name].(*object.List)
 		listIndex, listIndexOk := index.(*object.Integer)
 		if listOk && listIndexOk {
