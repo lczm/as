@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/lczm/as/lexer"
+	"github.com/lczm/as/object"
 	"github.com/lczm/as/parser"
 )
 
@@ -59,7 +60,7 @@ func TestIntegerExpressions(t *testing.T) {
 	}
 }
 
-func TestIndexExpressions(t *testing.T) {
+func TestListIndexExpressions(t *testing.T) {
 	tests := []struct {
 		input          string
 		expectedOutput string
@@ -91,6 +92,59 @@ func TestIndexExpressions(t *testing.T) {
 			if test.expectedOutput != obj.String() {
 				t.Fatalf("Test : [%d] - Mismatch in values, expected=%s, got=%s",
 					i, test.expectedOutput, obj.String())
+			}
+		}
+	}
+}
+
+func TestHashMapIndexExpressions(t *testing.T) {
+	tests := []struct {
+		input          string
+		keys           []string
+		expectedOutput []string
+	}{
+		{
+			`
+			var output = {0:10, 1:20, 2:30, 3:40};
+			`,
+			[]string{"0", "1", "2", "3"},
+			[]string{"10", "20", "30", "40"},
+		},
+	}
+
+	outputVariable := "output"
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		// Directly hook into the eval function instead, as
+		// the Start() method is self contained
+		interpreter.Start()
+
+		if interpreter.Environment.Exists(outputVariable) {
+			obj := interpreter.Environment.Get(outputVariable)
+
+			for j := 0; j < len(test.expectedOutput); j++ {
+				key := test.keys[j]
+				expectedOutput := test.expectedOutput[j]
+
+				obj := obj.(*object.HashMap)
+				intValue, _ := strconv.Atoi(key)
+				keyStr := &object.Integer{Value: int64(intValue)}
+
+				hashKey := object.HashKey{
+					Type:  keyStr.RawType(),
+					Value: keyStr.Hash().Value,
+				}
+				hashValue := obj.Value[hashKey]
+				if expectedOutput != hashValue.Value.String() {
+					t.Fatalf("Test : [%d] - Mismatch in values, expected=%s, got=%s",
+						i, expectedOutput, hashValue.Value.String())
+				}
 			}
 		}
 	}
