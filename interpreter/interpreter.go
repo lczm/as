@@ -50,6 +50,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalVariableExpression(node)
 	case *ast.AssignmentExpression:
 		return i.evalAssignmentExpression(node)
+	case *ast.AssignmentIndexExpression:
+		return i.evalAssignmentIndexExpression(node)
 	case *ast.BinaryExpression:
 		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
@@ -148,6 +150,14 @@ func (i *Interpreter) evalAssignmentExpression(expr *ast.AssignmentExpression) o
 	value := i.Eval(expr.Value)
 	i.Environment.Set(expr.Name.Literal, value)
 
+	return value
+}
+
+func (i *Interpreter) evalAssignmentIndexExpression(expr *ast.AssignmentIndexExpression) object.Object {
+	value := i.Eval(expr.Value)
+	index := i.Eval(expr.Index)
+
+	i.Environment.SetIndex(expr.Name.Literal, index, value)
 	return value
 }
 

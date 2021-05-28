@@ -96,6 +96,18 @@ func (ae *AssignmentExpression) String() string {
 		ae.Name.Literal, ae.Value.String())
 }
 
+type AssignmentIndexExpression struct {
+	Name  token.Token
+	Index Expression
+	Value Expression
+}
+
+func (aie *AssignmentIndexExpression) expression() {}
+func (aie *AssignmentIndexExpression) String() string {
+	return fmt.Sprintf("(AssignmentIndexExpression) Name : %s, Value : %s Index : %s\n",
+		aie.Name.Literal, aie.Value.String(), aie.Index.String())
+}
+
 type BinaryExpression struct {
 	Left     Expression
 	Right    Expression

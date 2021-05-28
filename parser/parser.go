@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/lczm/as/ast"
@@ -278,6 +279,14 @@ func (p *Parser) assignment() ast.Expression {
 			return &ast.AssignmentExpression{
 				Name:  varExpr.Name,
 				Value: value,
+			}
+		} else if callExpr, ok := expr.(*ast.CallExpression); ok {
+			fmt.Println(callExpr.Callee)
+			varExpr := callExpr.Callee.(*ast.VariableExpression)
+			return &ast.AssignmentIndexExpression{
+				Name:  varExpr.Name,
+				Value: value,
+				Index: callExpr.Arguments[0],
 			}
 		}
 

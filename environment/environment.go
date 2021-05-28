@@ -30,6 +30,28 @@ func (e *Environment) Set(name string, value object.Object) {
 	panic("Name not found in environment : Set")
 }
 
+func (e *Environment) SetIndex(name string, index object.Object, value object.Object) {
+	_, ok := e.Values[name]
+	if ok {
+		// TODO : Do this for hashmaps as well
+		list, listOk := e.Values[name].(*object.List)
+		listIndex, listIndexOk := index.(*object.Integer)
+		if listOk && listIndexOk {
+			list.Value[listIndex.Value] = value
+		}
+		return
+	}
+
+	// If it does not exist in the current environment, go up
+	// the parents
+	if e.Parent != nil {
+		e.Parent.SetIndex(name, index, value)
+		return
+	}
+
+	panic("Name not found in environment : SetIndex")
+}
+
 func (e *Environment) Get(name string) object.Object {
 	object, ok := e.Values[name]
 	if ok {
