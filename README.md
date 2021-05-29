@@ -96,14 +96,52 @@ var a = [1, 2, 3];
 a = append(a, 4);
 a = append(a, 5);
 ```
+HashMaps
+```javascript
+var a = {0:10, 1: 20};
+a[0] = 100;
+a[1] = 200;
+a[2] = 300;
+```
 
 ### Builtin Functions
-| Functions | Definition                               |
-|-----------|---                                       |
-|print()    |Print the out what it the object          |
-|len()      |Returns the length of the input           |
-|type()     |Returns the type of the input             |
-|append()   |Appends an element to the container       |
+| Functions | Definition                          |
+| --------- | ----------------------------------- |
+| print()   | Print the out what it the object    |
+| len()     | Returns the length of the input     |
+| type()    | Returns the type of the input       |
+| append()  | Appends an element to the container |
+
+### Examples : Sieve of Eratosthenes
+```javascript
+function sieve(n) {
+    var all = [];
+    for (var i = 0; i < n+1; i++) {
+        all = append(all, true);
+    }
+
+    var p = 2;
+    while (p * p <= n) {
+        if (all[p] == true) {
+            for (var i = p * 2; i < n + 1; i+=p) {
+                all[i] = false;
+            }
+        }
+        p += 1;
+    }
+
+    all[0] = false;
+    all[1] = false;
+
+    for (var i = 0; i < n; i++) {
+        if (all[i] == true) {
+            print(i);
+        }
+    }
+}
+
+sieve(100);
+```
 
 ### Notes
 Since this is a toy language, just use whatever file extension that works for you. For syntax highlighting, it is more convenient to match the language syntax to Javascript (on whatever editor you use.).
