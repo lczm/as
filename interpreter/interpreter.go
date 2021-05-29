@@ -243,6 +243,12 @@ func (i *Interpreter) evalBinaryExpression(expr *ast.BinaryExpression) object.Ob
 			rightValue := right.(*object.String).Value
 			return &object.Bool{Value: leftValue == rightValue}
 		}
+		// Bools
+		if left.RawType() == object.BOOL && right.RawType() == object.BOOL {
+			leftValue := left.(*object.Bool).Value
+			rightValue := right.(*object.Bool).Value
+			return &object.Bool{Value: leftValue == rightValue}
+		}
 	case token.NOT_EQ: // Not equals '!='
 		// Integers
 		if left.RawType() == object.INTEGER && right.RawType() == object.INTEGER {
