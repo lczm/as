@@ -60,6 +60,9 @@ func (p *Parser) statement() ast.Statement {
 	if p.match(token.FUNCTION) {
 		return p.functionStatement("function")
 	}
+	if p.match(token.STRUCT) {
+		return p.structStatement()
+	}
 	if p.match(token.IF) {
 		return p.ifStatement()
 	}
@@ -130,6 +133,38 @@ func (p *Parser) functionStatement(functionType string) ast.Statement {
 		Body:   *body,
 	}
 	return functionStatement
+}
+
+func (p *Parser) structStatement() ast.Statement {
+	name := p.peek()
+	if name.Type != token.IDENTIFIER {
+		panic("Struct name is not an identifier")
+	}
+	p.advance()
+
+	attributes := make(map[token.Token]ast.Statement)
+	methods := make(map[token.Token]ast.Statement)
+
+	p.eat(token.LBRACE, "Expect '{' to start off struct declaration")
+
+	for !p.match(token.RBRACE) {
+		value := p.peek()
+		if value.Type == token.VAR {
+			variable := p.declaration().(*ast.VariableStatement)
+			attributes[variable.Name] = variable
+		}
+	}
+
+	p.current--
+
+	p.eat(token.RBRACE, "Expect '}' to end off struct declaration")
+
+	structStatement := &ast.StructStatement{
+		Name:       name,
+		Attributes: attributes,
+		Methods:    methods,
+	}
+	return structStatement
 }
 
 // this function in the future should also support else if statements.

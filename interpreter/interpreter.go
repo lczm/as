@@ -42,6 +42,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalBlockStatement(node)
 	case *ast.FunctionStatement:
 		i.evalFunctionStatement(node)
+	case *ast.StructStatement:
+		i.evalStructStatement(node)
 	case *ast.ReturnStatement:
 		return i.evalReturnStatement(node)
 	case *ast.VariableStatement:
@@ -119,6 +121,13 @@ func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
 		FunctionStatement: *stmt,
 	}
 	i.Environment.Define(stmt.Name.Literal, functionObject)
+}
+
+func (i *Interpreter) evalStructStatement(stmt *ast.StructStatement) {
+	structObject := &object.Struct{
+		StructStatement: *stmt,
+	}
+	i.Environment.Define(stmt.Name.Literal, structObject)
 }
 
 func (i *Interpreter) evalReturnStatement(stmt *ast.ReturnStatement) object.Object {

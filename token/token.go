@@ -77,6 +77,7 @@ const (
 	WHILE    = "WHILE"
 	FOR      = "FOR"
 	FUNCTION = "FUNCTION"
+	STRUCT   = "STRUCT"
 	RETURN   = "RETURN"
 
 	// Misc

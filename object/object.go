@@ -12,6 +12,7 @@ const (
 	BOOL     = "BOOL"
 	INTEGER  = "INTEGER"
 	FUNCTION = "FUNCTION"
+	STRUCT   = "STRUCT"
 	RETURN   = "RETURN"
 	STRING   = "STRING"
 	BUILTIN  = "BULITIN" // builtin functions from the host language
@@ -168,6 +169,11 @@ func (f *Function) FormattedString() string {
 	return fmt.Sprintf("Function : <%s>", f.FunctionStatement.Name.Literal)
 }
 
+// The call functions should return an object
+// in the case of something like
+// var x = function(...)
+func (f *Function) Call() {}
+
 type BuiltinFunction struct {
 	Name string
 	Fn   func(args ...Object) Object
@@ -189,10 +195,25 @@ func (bf *BuiltinFunction) FormattedString() string {
 	return fmt.Sprintf("BulitinFunction: <%s>", bf.Name)
 }
 
-// The call functions should return an object
-// in the case of something like
-// var x = function(...)
-func (f *Function) Call() {}
+type Struct struct {
+	StructStatement ast.StructStatement
+}
+
+func (s *Struct) RawType() string {
+	return STRUCT
+}
+
+func (s *Struct) Type() string {
+	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+}
+
+func (s *Struct) String() string {
+	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+}
+
+func (s *Struct) FormattedString() string {
+	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+}
 
 // Return type, this is only for the interpreter and is not for use normally.
 type Return struct {

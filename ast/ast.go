@@ -77,6 +77,14 @@ type FunctionStatement struct {
 
 func (fs *FunctionStatement) statement() {}
 
+type StructStatement struct {
+	Name       token.Token
+	Attributes map[token.Token]Statement
+	Methods    map[token.Token]Statement
+}
+
+func (ss *StructStatement) statement() {}
+
 type ReturnStatement struct {
 	Keyword token.Token
 	Value   Expression
