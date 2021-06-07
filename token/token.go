@@ -39,6 +39,7 @@ const (
 	OR  = "||"
 
 	// Delimiters
+	DOT       = "."
 	COMMA     = ","
 	COLON     = ":"
 	SEMICOLON = ";"

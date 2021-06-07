@@ -1,6 +1,8 @@
 package environment
 
-import "github.com/lczm/as/object"
+import (
+	"github.com/lczm/as/object"
+)
 
 type Environment struct {
 	Values map[string]object.Object
@@ -64,6 +66,20 @@ func (e *Environment) SetIndex(name string, index object.Object, value object.Ob
 	}
 
 	panic("Name not found in environment : SetIndex")
+}
+
+func (e *Environment) SetStruct(name string, attribute string, value object.Object) {
+	_, ok := e.Values[name]
+	if ok {
+		structObject := e.Values[name].(*object.Struct)
+		structObject.Attributes[attribute] = value
+		return
+	}
+
+	if e.Parent != nil {
+		e.Parent.SetStruct(name, attribute, value)
+		return
+	}
 }
 
 func (e *Environment) Get(name string) object.Object {

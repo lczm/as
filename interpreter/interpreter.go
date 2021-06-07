@@ -54,6 +54,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.evalAssignmentExpression(node)
 	case *ast.AssignmentIndexExpression:
 		return i.evalAssignmentIndexExpression(node)
+	case *ast.AssignmentStruct:
+		return i.evalAssignmentStruct(node)
 	case *ast.BinaryExpression:
 		return i.evalBinaryExpression(node)
 	case *ast.UnaryExpression:
@@ -74,6 +76,8 @@ func (i *Interpreter) Eval(astNode ast.AstNode) object.Object {
 		return i.Eval(node.Expr)
 	case *ast.CallExpression:
 		return i.evalCallExpression(node)
+	case *ast.GetExpression:
+		return i.evalGetExpression(node)
 	}
 
 	return nil
@@ -124,8 +128,20 @@ func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
 }
 
 func (i *Interpreter) evalStructStatement(stmt *ast.StructStatement) {
+	attributes := make(map[string]object.Object)
+	methods := make(map[string]object.Object)
+
+	for attributeStmt := range stmt.Attributes {
+		attributes[attributeStmt.Literal] = i.Eval(attributeStmt)
+	}
+	for methodStmt := range stmt.Methods {
+		attributes[methodStmt.Literal] = i.Eval(methodStmt)
+	}
+
 	structObject := &object.Struct{
-		StructStatement: *stmt,
+		Name:       stmt.Name.Literal,
+		Attributes: attributes,
+		Methods:    methods,
 	}
 	i.Environment.Define(stmt.Name.Literal, structObject)
 }
@@ -167,6 +183,15 @@ func (i *Interpreter) evalAssignmentIndexExpression(expr *ast.AssignmentIndexExp
 	index := i.Eval(expr.Index)
 
 	i.Environment.SetIndex(expr.Name.Literal, index, value)
+	return value
+}
+
+func (i *Interpreter) evalAssignmentStruct(expr *ast.AssignmentStruct) object.Object {
+	value := i.Eval(expr.Value)
+	// Need to convert from a generic 'Expression' into a ast.VariableExpression
+	// to access Name.Literal
+	variableExpression := expr.Attribute.(*ast.VariableExpression)
+	i.Environment.SetStruct(expr.Name.Literal, variableExpression.Name.Literal, value)
 	return value
 }
 
@@ -390,6 +415,17 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 			return returnObj.Value
 		}
 		return obj
+	// This is to initialize a struct from nothing-ness
+	// TODO: Add in parameters when initializing the structs
+	// the parameters have to match up with a init function in the
+	// struct itself. Reference can be how python objects are initialized
+	case *object.Struct:
+		// Make a copy of it, TODO: need to check if there are other ways to
+		// make this work
+		newCallee := callee
+		newCallee.Attributes = make(map[string]object.Object)
+		newCallee.Methods = make(map[string]object.Object)
+		return newCallee
 	// If the callee is a list, then the following is what is parsed
 	// (List)[1]
 	// Where the '1' is now the argument to the 'callee'
@@ -432,6 +468,21 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		}
 
 		return &object.String{Value: string(callee.Value[intIndex.Value])}
+	default:
+		return nil
+	}
+}
+
+func (i *Interpreter) evalGetExpression(expr *ast.GetExpression) object.Object {
+	switch callee := i.Eval(expr.Callee).(type) {
+	case *object.Struct:
+		// Check if attribute exists
+		variableExpression := expr.Attribute.(*ast.VariableExpression)
+		obj, ok := callee.Attributes[variableExpression.Name.Literal]
+		if ok {
+			return obj
+		}
+		return nil
 	default:
 		return nil
 	}

@@ -215,6 +215,12 @@ func (l *Lexer) Scan(source string) []token.Token {
 				panic("Single '|' character cannot be lexed")
 			}
 		// Delimiters
+		case '.':
+			tokens = append(tokens, token.Token{
+				Type:    token.DOT,
+				Literal: ".",
+				Line:    currentLine,
+			})
 		case ',':
 			tokens = append(tokens, token.Token{
 				Type:    token.COMMA,

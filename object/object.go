@@ -196,7 +196,9 @@ func (bf *BuiltinFunction) FormattedString() string {
 }
 
 type Struct struct {
-	StructStatement ast.StructStatement
+	Name       string
+	Attributes map[string]Object
+	Methods    map[string]Object
 }
 
 func (s *Struct) RawType() string {
@@ -204,15 +206,15 @@ func (s *Struct) RawType() string {
 }
 
 func (s *Struct) Type() string {
-	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+	return fmt.Sprintf("Struct: <%s>", STRUCT)
 }
 
 func (s *Struct) String() string {
-	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+	return fmt.Sprintf("Struct: <%s>", s.Name)
 }
 
 func (s *Struct) FormattedString() string {
-	return fmt.Sprintf("Struct: <%s>", s.StructStatement.Name.Literal)
+	return fmt.Sprintf("Struct: <%s>", s.Name)
 }
 
 // Return type, this is only for the interpreter and is not for use normally.

@@ -321,6 +321,13 @@ func (p *Parser) assignment() ast.Expression {
 				Value: value,
 				Index: callExpr.Arguments[0],
 			}
+		} else if getExpr, ok := expr.(*ast.GetExpression); ok {
+			varExpr := getExpr.Callee.(*ast.VariableExpression)
+			return &ast.AssignmentStruct{
+				Name:      varExpr.Name,
+				Attribute: getExpr.Attribute,
+				Value:     value,
+			}
 		}
 
 		// Error out here.
@@ -585,6 +592,15 @@ func (p *Parser) call() ast.Expression {
 			p.eat(token.RBRACKET, "Expect ']' after '[' index expression")
 			expr = &ast.CallExpression{
 				Callee:    expr,
+				Arguments: arguments,
+			}
+		} else if p.match(token.DOT) {
+			attribute := p.primary()
+			arguments := make([]ast.Expression, 0)
+
+			expr = &ast.GetExpression{
+				Callee:    expr,
+				Attribute: attribute,
 				Arguments: arguments,
 			}
 		} else {
