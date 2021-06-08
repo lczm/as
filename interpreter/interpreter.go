@@ -420,11 +420,23 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 	// the parameters have to match up with a init function in the
 	// struct itself. Reference can be how python objects are initialized
 	case *object.Struct:
-		// Make a copy of it, TODO: need to check if there are other ways to
-		// make this work
-		newCallee := callee
-		newCallee.Attributes = make(map[string]object.Object)
-		newCallee.Methods = make(map[string]object.Object)
+		// Make a copy of the object, as this is pointer based
+		// this deep copies all the values over
+		newCallee := &object.Struct{
+			Name:       callee.Name,
+			Attributes: make(map[string]object.Object),
+			Methods:    make(map[string]object.Object),
+		}
+
+		// Reset all values to integer 0
+		for k := range newCallee.Attributes {
+			newCallee.Attributes[k] = &object.Integer{Value: 0}
+		}
+		// TODO : This should not be setting to integers
+		for m := range newCallee.Methods {
+			newCallee.Methods[m] = &object.Integer{Value: 0}
+		}
+
 		return newCallee
 	// If the callee is a list, then the following is what is parsed
 	// (List)[1]
@@ -477,8 +489,8 @@ func (i *Interpreter) evalGetExpression(expr *ast.GetExpression) object.Object {
 	switch callee := i.Eval(expr.Callee).(type) {
 	case *object.Struct:
 		// Check if attribute exists
-		variableExpression := expr.Attribute.(*ast.VariableExpression)
-		obj, ok := callee.Attributes[variableExpression.Name.Literal]
+		attributeVariableExpression := expr.Attribute.(*ast.VariableExpression)
+		obj, ok := callee.Attributes[attributeVariableExpression.Name.Literal]
 		if ok {
 			return obj
 		}

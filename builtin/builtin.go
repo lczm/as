@@ -59,9 +59,11 @@ func PrintFunc() object.Object {
 	function := &object.BuiltinFunction{
 		Name: "print",
 		Fn: func(args ...object.Object) object.Object {
+			var s string
 			for _, arg := range args {
-				fmt.Println(arg.String())
+				s += arg.String()
 			}
+			fmt.Println(s)
 			return nil
 		},
 	}
