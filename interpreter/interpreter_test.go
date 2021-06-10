@@ -150,6 +150,64 @@ func TestHashMapIndexExpressions(t *testing.T) {
 	}
 }
 
+func TestStructAssignment(t *testing.T) {
+	tests := []struct {
+		input          string
+		expectedOutput []string
+	}{
+		{
+			`
+			struct Test {
+				var output1;
+				var output2;
+			}
+
+			var test1 = Test();
+			test1.output1 = 10;
+			test1.output2 = 20;
+
+			var test2 = Test();
+			test2.output1 = 30;
+			test2.output2 = 40;
+			`,
+			[]string{"10", "20", "30", "40"},
+		},
+	}
+
+	outputVariables := [2]string{"test1", "test2"}
+	outputAttributes := [2]string{"output1", "output2"}
+	lexer := lexer.New()
+
+	for i, test := range tests {
+		tokens := lexer.Scan(test.input)
+		parser := parser.New(tokens)
+		statements := parser.Parse()
+
+		interpreter := New(statements)
+		// Directly hook into the eval function instead, as
+		// the Start() method is self contained
+		interpreter.Start()
+
+		counter := 0
+
+		for j := 0; j < len(outputVariables); j++ {
+			if interpreter.Environment.Exists(outputVariables[j]) {
+				obj := interpreter.Environment.Get(outputVariables[j]).(*object.Struct)
+				for k := 0; k < len(outputAttributes); k++ {
+					attribute := obj.Attributes[outputAttributes[k]]
+					value, _ := strconv.Atoi(test.expectedOutput[counter])
+					intValue := &object.Integer{Value: int64(value)}
+					if attribute.String() != intValue.String() {
+						t.Fatalf("Test : [%d] - Mismatch in values, expected=%s, got=%s",
+							i, attribute.String(), intValue.String())
+					}
+					counter++
+				}
+			}
+		}
+	}
+}
+
 func TestIncrementDecrement(t *testing.T) {
 	tests := []struct {
 		input          string

@@ -72,6 +72,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"while", token.WHILE, "while"},
 		{"for", token.FOR, "for"},
 		{"function", token.FUNCTION, "function"},
+		{"struct", token.STRUCT, "struct"},
 	}
 
 	lexer := New()
@@ -197,6 +198,16 @@ func TestMultipleTokenScan(t *testing.T) {
 			`a--;`,
 			[]token.TokenType{token.IDENTIFIER, token.DECREMENT, token.SEMICOLON},
 			[]string{"a", "--", ";"},
+		},
+		{ // Structs declaration
+			`
+			struct Test {
+				var a;
+			}
+			`,
+			[]token.TokenType{token.STRUCT, token.IDENTIFIER, token.LBRACE, token.VAR, token.IDENTIFIER,
+				token.SEMICOLON, token.RBRACE},
+			[]string{"struct", "Test", "{", "var", "a", ";", "}"},
 		},
 	}
 

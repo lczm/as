@@ -376,6 +376,7 @@ func New() *Lexer {
 	keywords["true"] = token.TRUE
 	keywords["false"] = token.FALSE
 	keywords["struct"] = token.STRUCT
+	keywords["this"] = token.THIS
 
 	l := &Lexer{
 		Keywords: keywords,

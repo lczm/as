@@ -80,6 +80,7 @@ const (
 	FUNCTION = "FUNCTION"
 	STRUCT   = "STRUCT"
 	RETURN   = "RETURN"
+	THIS     = "THIS"
 
 	// Misc
 	EOF = "EOF"
