@@ -197,6 +197,7 @@ func (bf *BuiltinFunction) FormattedString() string {
 
 type Struct struct {
 	Name       string
+	HasInit    bool
 	Attributes map[string]Object
 	Methods    map[string]Object
 }

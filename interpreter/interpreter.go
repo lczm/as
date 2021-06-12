@@ -141,12 +141,19 @@ func (i *Interpreter) evalStructStatement(stmt *ast.StructStatement) {
 	for attributeStmt := range stmt.Attributes {
 		attributes[attributeStmt.Literal] = i.Eval(attributeStmt)
 	}
+
+	// Check if the user included an initialization method
+	hasInit := false
 	for methodName, methodStmt := range stmt.Methods {
+		if methodName.Literal == "init" {
+			hasInit = true
+		}
 		methods[methodName.Literal] = i.evalMethodStatement(methodStmt.(*ast.FunctionStatement))
 	}
 
 	structObject := &object.Struct{
 		Name:       stmt.Name.Literal,
+		HasInit:    hasInit,
 		Attributes: attributes,
 		Methods:    methods,
 	}
@@ -431,6 +438,7 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		// this deep copies all the values over, except methods
 		newCallee := &object.Struct{
 			Name:       callee.Name,
+			HasInit:    callee.HasInit,
 			Attributes: make(map[string]object.Object),
 			// Methods can refer to the same function block, as there is
 			// it will function the same regardless
@@ -440,6 +448,14 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 		// Reset all values to integer 0
 		for k := range newCallee.Attributes {
 			newCallee.Attributes[k] = &object.Integer{Value: 0}
+		}
+
+		// If the struct has an initialization method, this is where
+		// it should be called
+		if newCallee.HasInit {
+			initFunction := newCallee.Methods["init"].(*object.Function)
+			i.ExecuteBlockStatements(initFunction.FunctionStatement.Body.Statements,
+				i.Environment)
 		}
 
 		return newCallee
