@@ -262,8 +262,9 @@ func (ce *CallExpression) String() string {
 // variable.method()
 type GetExpression struct {
 	Callee    Expression
-	Attribute Expression
+	Caller    Expression
 	Arguments []Expression
+	IsMethod  bool
 }
 
 func (ge *GetExpression) expression() {}

@@ -127,6 +127,13 @@ func (i *Interpreter) evalFunctionStatement(stmt *ast.FunctionStatement) {
 	i.Environment.Define(stmt.Name.Literal, functionObject)
 }
 
+func (i *Interpreter) evalMethodStatement(stmt *ast.FunctionStatement) object.Object {
+	functionObject := &object.Function{
+		FunctionStatement: *stmt,
+	}
+	return functionObject
+}
+
 func (i *Interpreter) evalStructStatement(stmt *ast.StructStatement) {
 	attributes := make(map[string]object.Object)
 	methods := make(map[string]object.Object)
@@ -134,8 +141,8 @@ func (i *Interpreter) evalStructStatement(stmt *ast.StructStatement) {
 	for attributeStmt := range stmt.Attributes {
 		attributes[attributeStmt.Literal] = i.Eval(attributeStmt)
 	}
-	for methodStmt := range stmt.Methods {
-		attributes[methodStmt.Literal] = i.Eval(methodStmt)
+	for methodName, methodStmt := range stmt.Methods {
+		methods[methodName.Literal] = i.evalMethodStatement(methodStmt.(*ast.FunctionStatement))
 	}
 
 	structObject := &object.Struct{
@@ -421,20 +428,18 @@ func (i *Interpreter) evalCallExpression(expr *ast.CallExpression) object.Object
 	// struct itself. Reference can be how python objects are initialized
 	case *object.Struct:
 		// Make a copy of the object, as this is pointer based
-		// this deep copies all the values over
+		// this deep copies all the values over, except methods
 		newCallee := &object.Struct{
 			Name:       callee.Name,
 			Attributes: make(map[string]object.Object),
-			Methods:    make(map[string]object.Object),
+			// Methods can refer to the same function block, as there is
+			// it will function the same regardless
+			Methods: callee.Methods,
 		}
 
 		// Reset all values to integer 0
 		for k := range newCallee.Attributes {
 			newCallee.Attributes[k] = &object.Integer{Value: 0}
-		}
-		// TODO : This should not be setting to integers
-		for m := range newCallee.Methods {
-			newCallee.Methods[m] = &object.Integer{Value: 0}
 		}
 
 		return newCallee
@@ -489,10 +494,20 @@ func (i *Interpreter) evalGetExpression(expr *ast.GetExpression) object.Object {
 	switch callee := i.Eval(expr.Callee).(type) {
 	case *object.Struct:
 		// Check if attribute exists
-		attributeVariableExpression := expr.Attribute.(*ast.VariableExpression)
-		obj, ok := callee.Attributes[attributeVariableExpression.Name.Literal]
-		if ok {
-			return obj
+		switch attribute := expr.Caller.(type) {
+		case *ast.VariableExpression:
+			if expr.IsMethod { // Method cases
+				methodName := attribute.Name.Literal
+				obj, ok := callee.Methods[methodName]
+				if ok {
+					return obj
+				}
+			} else { // Attribute cases
+				obj, ok := callee.Attributes[attribute.Name.Literal]
+				if ok {
+					return obj
+				}
+			}
 		}
 		return nil
 	default:

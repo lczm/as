@@ -149,9 +149,13 @@ func (p *Parser) structStatement() ast.Statement {
 
 	for !p.match(token.RBRACE) {
 		value := p.peek()
+		// fmt.Println(value.Type, value.Literal)
 		if value.Type == token.VAR {
 			variable := p.declaration().(*ast.VariableStatement)
 			attributes[variable.Name] = variable
+		} else if value.Type == token.IDENTIFIER {
+			function := p.functionStatement("method").(*ast.FunctionStatement)
+			methods[function.Name] = function
 		}
 	}
 
@@ -325,7 +329,7 @@ func (p *Parser) assignment() ast.Expression {
 			varExpr := getExpr.Callee.(*ast.VariableExpression)
 			return &ast.AssignmentStruct{
 				Name:      varExpr.Name,
-				Attribute: getExpr.Attribute,
+				Attribute: getExpr.Caller,
 				Value:     value,
 			}
 		}
@@ -595,13 +599,28 @@ func (p *Parser) call() ast.Expression {
 				Arguments: arguments,
 			}
 		} else if p.match(token.DOT) {
-			attribute := p.primary()
+			// attribute := p.primary()
 			arguments := make([]ast.Expression, 0)
+
+			current := p.peek()
+			currentNext := p.peekN(1)
+			isMethod := false
+			var caller ast.Expression
+
+			if current.Type == token.IDENTIFIER && currentNext.Type == token.LPAREN {
+				isMethod = true
+				caller = p.primary()
+			} else {
+				caller = p.primary()
+			}
+
+			// fmt.Println("caller : ", caller)
 
 			expr = &ast.GetExpression{
 				Callee:    expr,
-				Attribute: attribute,
+				Caller:    caller,
 				Arguments: arguments,
+				IsMethod:  isMethod,
 			}
 		} else {
 			break
@@ -736,6 +755,14 @@ func (p *Parser) peek() token.Token {
 		panic("Parsing an out of range index")
 	}
 	return p.tokens[p.current]
+}
+
+// Same as peek but allows for further peeks, other than just current
+func (p *Parser) peekN(n int) token.Token {
+	if p.current+n < 0 || p.current+n == len(p.tokens) {
+		panic("Parsing an out of range index")
+	}
+	return p.tokens[p.current+n]
 }
 
 func (p *Parser) advance() {
