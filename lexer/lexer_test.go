@@ -73,6 +73,7 @@ func TestIndividualTokenScan(t *testing.T) {
 		{"for", token.FOR, "for"},
 		{"function", token.FUNCTION, "function"},
 		{"struct", token.STRUCT, "struct"},
+		{"this", token.THIS, "this"},
 	}
 
 	lexer := New()
