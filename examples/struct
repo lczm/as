@@ -1,0 +1,20 @@
+struct Test {
+    var a;
+    var b;
+
+    init() {
+        print("initialization");
+    }
+
+    print_something_and_return() {
+        print("hello there");
+        return 1;
+    }
+}
+
+var c = Test();
+c.a = 10;
+c.b = 20;
+
+var d = c.print_something_and_return();
+print(d);

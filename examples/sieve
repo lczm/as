@@ -1,0 +1,27 @@
+function sieve(n) {
+    var all = [];
+    for (var i = 0; i < n+1; i++) {
+        all = append(all, true);
+    }
+
+    var p = 2;
+    while (p * p <= n) {
+        if (all[p] == true) {
+            for (var i = p * 2; i < n + 1; i+=p) {
+                all[i] = false;
+            }
+        }
+        p += 1;
+    }
+
+    all[0] = false;
+    all[1] = false;
+
+    for (var i = 0; i < n; i++) {
+        if (all[i] == true) {
+            print(i);
+        }
+    }
+}
+
+sieve(100);
