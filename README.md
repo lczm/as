@@ -104,6 +104,22 @@ a[1] = 200;
 a[2] = 300;
 ```
 
+### Structures
+```javascript
+struct Test {
+    var a;
+    var b;
+    
+    init() {
+        print("Initialization");
+    }
+}
+
+var test = Test();
+test.a = 10;
+print(10);
+```
+
 ### Builtin Functions
 | Functions | Definition                          |
 | --------- | ----------------------------------- |
