@@ -751,17 +751,11 @@ func (p *Parser) match(tokens ...token.TokenType) bool {
 }
 
 func (p *Parser) peek() token.Token {
-	if p.current < 0 || p.current == len(p.tokens) {
-		panic("Parsing an out of range index")
-	}
 	return p.tokens[p.current]
 }
 
 // Same as peek but allows for further peeks, other than just current
 func (p *Parser) peekN(n int) token.Token {
-	if p.current+n < 0 || p.current+n == len(p.tokens) {
-		panic("Parsing an out of range index")
-	}
 	return p.tokens[p.current+n]
 }
 
@@ -782,6 +776,11 @@ func (p *Parser) previous() token.Token {
 }
 
 func (p *Parser) eat(tokenType token.TokenType, message string) {
+	if p.current < 0 || p.current == len(p.tokens) {
+		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(tokenType, message))
+		return
+	}
+
 	if p.peek().Type == tokenType {
 		p.current++
 		return
