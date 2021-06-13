@@ -29,6 +29,8 @@ func (p *Parser) Parse() []ast.Statement {
 func (p *Parser) declaration() ast.Statement {
 	if p.match(token.VAR) {
 		return p.varDeclaration()
+	} else if p.match(token.THIS) {
+		return p.thisDeclaration()
 	}
 	return p.statement()
 }
@@ -53,6 +55,16 @@ func (p *Parser) varDeclaration() ast.Statement {
 		variableStatement.Initializer = nil
 	}
 	return variableStatement
+}
+
+func (p *Parser) thisDeclaration() ast.Statement {
+	// TODO : This should not return a varDeclartion
+	// there should an ast that defines this.{attribute}
+
+	p.eat(token.DOT, "Expect '.' after 'this'")
+	// p.eat(token.IDENTIFIER, "Expect attribute name")
+	// name := p.previous()
+	return p.varDeclaration()
 }
 
 func (p *Parser) statement() ast.Statement {
