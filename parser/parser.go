@@ -709,7 +709,17 @@ func (p *Parser) eat(tokenType token.TokenType, message string) {
 		return
 	}
 
-	globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(tokenType, message))
+	// If the error occurs on a different line than it is currently on, i.e.
+	// 4: print(b)
+	// 5: print(a);
+	// even though the syntax error is on line 4, it will show line 5,
+	// as it is trying to eat the next token that exists on line 5
+	if p.peek().Line != p.previous().Line {
+		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(p.previous(), message))
+	} else {
+		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(p.peek(), message))
+	}
+
 }
 
 func New(tokens []token.Token) *Parser {

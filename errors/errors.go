@@ -26,20 +26,20 @@ type Error interface {
 // it will take place in the parsing phase
 type SyntaxError struct {
 	Error
-	tokenType token.TokenType
-	message   string
+	token   token.Token
+	message string
 }
 
-func NewSyntaxError(tokenType token.TokenType, message string) SyntaxError {
+func NewSyntaxError(token token.Token, message string) SyntaxError {
 	se := SyntaxError{
-		tokenType: tokenType,
-		message:   message,
+		token:   token,
+		message: message,
 	}
 	return se
 }
 
 func (se SyntaxError) Describe() {
-	fmt.Printf("Syntax Error at '%s' : %s\n", se.tokenType, se.message)
+	fmt.Printf("Syntax Error at line '%d' : %s\n", se.token.Line, se.message)
 }
 
 // Runtime errors will take in objects as they are
