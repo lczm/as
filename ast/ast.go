@@ -77,6 +77,14 @@ type FunctionStatement struct {
 
 func (fs *FunctionStatement) statement() {}
 
+type StructStatement struct {
+	Name       token.Token
+	Attributes map[token.Token]Statement
+	Methods    map[token.Token]Statement
+}
+
+func (ss *StructStatement) statement() {}
+
 type ReturnStatement struct {
 	Keyword token.Token
 	Value   Expression
@@ -106,6 +114,18 @@ func (aie *AssignmentIndexExpression) expression() {}
 func (aie *AssignmentIndexExpression) String() string {
 	return fmt.Sprintf("(AssignmentIndexExpression) Name : %s, Value : %s Index : %s\n",
 		aie.Name.Literal, aie.Value.String(), aie.Index.String())
+}
+
+type AssignmentStruct struct {
+	Name      token.Token
+	Attribute Expression
+	Value     Expression
+}
+
+func (as *AssignmentStruct) expression() {}
+func (as *AssignmentStruct) String() string {
+	return fmt.Sprintf("(AssignmentStruct) Name : %s, Value : %s Attribute : %s\n",
+		as.Name.Literal, as.Value.String(), as.Attribute.String())
 }
 
 type BinaryExpression struct {
@@ -233,4 +253,26 @@ func (ce *CallExpression) String() string {
 	}
 	return fmt.Sprintf("(CallExpression) Callee : %s, Arguments : %s\n",
 		ce.Callee.String(), arguments)
+}
+
+// This is almost the same as CallExpression
+// except that the use-case for this is
+// variable.{attribute}
+// or in the future when methods are supported :
+// variable.method()
+type GetExpression struct {
+	Callee    Expression
+	Caller    Expression
+	Arguments []Expression
+	IsMethod  bool
+}
+
+func (ge *GetExpression) expression() {}
+func (ge *GetExpression) String() string {
+	var arguments []string
+	for i := 0; i < len(ge.Arguments); i++ {
+		arguments = append(arguments, ge.Arguments[i].String())
+	}
+	return fmt.Sprintf("(GetExpression) Callee : %s, Arguments : %s\n",
+		ge.Callee.String(), arguments)
 }

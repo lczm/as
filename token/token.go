@@ -39,6 +39,7 @@ const (
 	OR  = "||"
 
 	// Delimiters
+	DOT       = "."
 	COMMA     = ","
 	COLON     = ":"
 	SEMICOLON = ";"
@@ -77,7 +78,9 @@ const (
 	WHILE    = "WHILE"
 	FOR      = "FOR"
 	FUNCTION = "FUNCTION"
+	STRUCT   = "STRUCT"
 	RETURN   = "RETURN"
+	THIS     = "THIS"
 
 	// Misc
 	EOF = "EOF"

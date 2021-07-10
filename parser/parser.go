@@ -29,6 +29,8 @@ func (p *Parser) Parse() []ast.Statement {
 func (p *Parser) declaration() ast.Statement {
 	if p.match(token.VAR) {
 		return p.varDeclaration()
+	} else if p.match(token.THIS) {
+		return p.thisDeclaration()
 	}
 	return p.statement()
 }
@@ -55,10 +57,23 @@ func (p *Parser) varDeclaration() ast.Statement {
 	return variableStatement
 }
 
+func (p *Parser) thisDeclaration() ast.Statement {
+	// TODO : This should not return a varDeclartion
+	// there should an ast that defines this.{attribute}
+
+	p.eat(token.DOT, "Expect '.' after 'this'")
+	// p.eat(token.IDENTIFIER, "Expect attribute name")
+	// name := p.previous()
+	return p.varDeclaration()
+}
+
 func (p *Parser) statement() ast.Statement {
 	// This is a function declaration, it can be re-used to be parsed for methods as well.
 	if p.match(token.FUNCTION) {
 		return p.functionStatement("function")
+	}
+	if p.match(token.STRUCT) {
+		return p.structStatement()
 	}
 	if p.match(token.IF) {
 		return p.ifStatement()
@@ -130,6 +145,42 @@ func (p *Parser) functionStatement(functionType string) ast.Statement {
 		Body:   *body,
 	}
 	return functionStatement
+}
+
+func (p *Parser) structStatement() ast.Statement {
+	name := p.peek()
+	if name.Type != token.IDENTIFIER {
+		panic("Struct name is not an identifier")
+	}
+	p.advance()
+
+	attributes := make(map[token.Token]ast.Statement)
+	methods := make(map[token.Token]ast.Statement)
+
+	p.eat(token.LBRACE, "Expect '{' to start off struct declaration")
+
+	for !p.match(token.RBRACE) {
+		value := p.peek()
+		// fmt.Println(value.Type, value.Literal)
+		if value.Type == token.VAR {
+			variable := p.declaration().(*ast.VariableStatement)
+			attributes[variable.Name] = variable
+		} else if value.Type == token.IDENTIFIER {
+			function := p.functionStatement("method").(*ast.FunctionStatement)
+			methods[function.Name] = function
+		}
+	}
+
+	p.current--
+
+	p.eat(token.RBRACE, "Expect '}' to end off struct declaration")
+
+	structStatement := &ast.StructStatement{
+		Name:       name,
+		Attributes: attributes,
+		Methods:    methods,
+	}
+	return structStatement
 }
 
 // this function in the future should also support else if statements.
@@ -285,6 +336,13 @@ func (p *Parser) assignment() ast.Expression {
 				Name:  varExpr.Name,
 				Value: value,
 				Index: callExpr.Arguments[0],
+			}
+		} else if getExpr, ok := expr.(*ast.GetExpression); ok {
+			varExpr := getExpr.Callee.(*ast.VariableExpression)
+			return &ast.AssignmentStruct{
+				Name:      varExpr.Name,
+				Attribute: getExpr.Caller,
+				Value:     value,
 			}
 		}
 
@@ -552,6 +610,30 @@ func (p *Parser) call() ast.Expression {
 				Callee:    expr,
 				Arguments: arguments,
 			}
+		} else if p.match(token.DOT) {
+			// attribute := p.primary()
+			arguments := make([]ast.Expression, 0)
+
+			current := p.peek()
+			currentNext := p.peekN(1)
+			isMethod := false
+			var caller ast.Expression
+
+			if current.Type == token.IDENTIFIER && currentNext.Type == token.LPAREN {
+				isMethod = true
+				caller = p.primary()
+			} else {
+				caller = p.primary()
+			}
+
+			// fmt.Println("caller : ", caller)
+
+			expr = &ast.GetExpression{
+				Callee:    expr,
+				Caller:    caller,
+				Arguments: arguments,
+				IsMethod:  isMethod,
+			}
 		} else {
 			break
 		}
@@ -681,10 +763,12 @@ func (p *Parser) match(tokens ...token.TokenType) bool {
 }
 
 func (p *Parser) peek() token.Token {
-	if p.current < 0 || p.current == len(p.tokens) {
-		panic("Parsing an out of range index")
-	}
 	return p.tokens[p.current]
+}
+
+// Same as peek but allows for further peeks, other than just current
+func (p *Parser) peekN(n int) token.Token {
+	return p.tokens[p.current+n]
 }
 
 func (p *Parser) advance() {
@@ -704,6 +788,11 @@ func (p *Parser) previous() token.Token {
 }
 
 func (p *Parser) eat(tokenType token.TokenType, message string) {
+	if p.current < 0 || p.current == len(p.tokens) {
+		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(tokenType, message))
+		return
+	}
+
 	if p.peek().Type == tokenType {
 		p.current++
 		return
