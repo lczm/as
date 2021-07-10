@@ -789,7 +789,7 @@ func (p *Parser) previous() token.Token {
 
 func (p *Parser) eat(tokenType token.TokenType, message string) {
 	if p.current < 0 || p.current == len(p.tokens) {
-		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(tokenType, message))
+		globals.ErrorList = append(globals.ErrorList, errors.NewSyntaxError(p.peek(), message))
 		return
 	}
 
